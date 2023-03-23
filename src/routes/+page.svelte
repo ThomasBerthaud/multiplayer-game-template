@@ -1,3 +1,11 @@
+<script lang="ts">
+	import type { PageData } from './$types';
+
+	export let data: PageData;
+
+	$: ({ games } = data);
+</script>
+
 <h1 class="text-5xl px-4 py-3 text-center">Bienvenue</h1>
 <section class="mt-8 flex flex-col items-center justify-center">
 	<a
@@ -13,4 +21,8 @@
 	>
 		Rejoindre une partie
 	</a>
+	<div>Parties en cours :</div>
+	{#each games as game}
+		<span>{game.room_name}</span>
+	{/each}
 </section>
