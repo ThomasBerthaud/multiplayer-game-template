@@ -1,38 +1,56 @@
-# create-svelte
+# Multiplater game template
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+Ce projet est un template pour créer un jeu multijoueur en ligne. Il est basé sur [svelteKit](https://kit.svelte.dev/) et [Supabase](https://supabase.io/).
 
-## Creating a project
+## Installation du projet
 
-If you're seeing this, you've probably already done this step. Congrats!
+installer les dépendances
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+npm install
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+lancer en mode developpement
 
 ```bash
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+Faire un build du projet
 
-To create a production version of your app:
-
-```bash
+```
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+Ce projet utilise supabase comme solution backend, pour pouvoir acceder à la base de donnée, il faut créer un fichier **.env** et ajouter :
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+```bash
+PUBLIC_SUPABASE_URL="SUPABE_URL"
+PUBLIC_SUPABASE_ANON_KEY="ANON_KEY"
+```
+
+en remplaçant les valeurs par celles de votre projet supabase.
+
+## Installation de la base de données
+
+executez le script de population de donnée dans le dossier [script](./scripts/) (TODO)
+
+## Tests automatisés
+
+Le projet est couvert par des tests unitaires
+
+```bash
+npm run test:unit
+```
+
+et des tests d'intégration
+
+```bash
+npm run test
+```
+
+Il est aussi possible d'executer eslint
+
+```bash
+npm run lint
+```
