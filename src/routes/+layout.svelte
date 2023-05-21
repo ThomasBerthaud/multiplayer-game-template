@@ -3,6 +3,8 @@
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
+	import { inject } from '@vercel/analytics';
+	import { dev } from '$app/environment';
 
 	export let data: LayoutData;
 
@@ -15,6 +17,9 @@
 
 		return () => data.subscription.unsubscribe();
 	});
+
+	// Vercel analytics
+	inject({ mode: dev ? 'development' : 'production' });
 </script>
 
 <svelte:head>
