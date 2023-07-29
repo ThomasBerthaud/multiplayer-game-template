@@ -33,7 +33,15 @@ en remplaçant les valeurs par celles de votre projet supabase.
 
 ## Installation de la base de données
 
+### Population de la base de données
+
 executez le script de population de donnée dans le dossier [script](./scripts/) (TODO)
+
+### récupération du typage typescript de la base de données
+
+```bash
+npm run db-types
+```
 
 ## Tests automatisés
 

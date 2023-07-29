@@ -2,6 +2,7 @@
 	"name": "multiplayer-game-template",
 	"version": "0.0.1",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -9,37 +10,49 @@
 		"test": "playwright test",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"test:unit": "vitest",
-		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write ."
+		"test:unit": "vitest run",
+		"test:unit:watch": "vitest",
+		"lint": "tsc --noEmit && eslint .",
+		"format": "prettier --plugin-search-dir . --write .",
+		"db-types": "supabase gen types typescript --linked > src/lib/infrastructure/database.types.ts",
+		"prepare": "husky install"
+	},
+	"lint-staged": {
+		"*.{js,ts,svelte}": "eslint --cache",
+		"*.{js,ts,svelte,json,css,md}": "npm run format"
 	},
 	"dependencies": {
 		"@supabase/auth-helpers-sveltekit": "^0.9.0",
 		"@supabase/supabase-js": "^2.12.0",
-		"@vercel/analytics": "^1.0.1"
+		"@vercel/analytics": "^1.0.1",
+		"hashids": "^2.2.11",
+		"uuid": "^9.0.0"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/adapter-vercel": "^2.4.0",
 		"@sveltejs/kit": "^1.5.0",
+		"@types/uuid": "^9.0.1",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
 		"autoprefixer": "^10.4.14",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte3": "^4.0.0",
+		"husky": "^8.0.3",
+		"lint-staged": "^13.2.2",
 		"postcss": "^8.4.21",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.8.1",
+		"prettier-plugin-tailwindcss": "^0.2.8",
 		"supabase": "^1.45.2",
 		"svelte": "^3.54.0",
 		"svelte-check": "^3.0.1",
 		"tailwindcss": "^3.2.7",
 		"tslib": "^2.4.1",
 		"typescript": "^5.0.0",
-		"vite": "^4.2.0",
+		"vite": "^4.2.3",
 		"vitest": "^0.25.3"
-	},
-	"type": "module"
+	}
 }

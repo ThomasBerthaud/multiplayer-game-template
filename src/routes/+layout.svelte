@@ -26,10 +26,8 @@
 	<title>Multiplayer game</title>
 </svelte:head>
 
-<div class="flex flex-col justify-between h-screen">
-	<header class="bg-slate-700 h-10 w-full" />
-	<div class="container mx-auto p-4 flex-1">
+<div class="flex h-screen flex-col justify-between">
+	<div class="container mx-auto flex-1 p-4">
 		<slot />
 	</div>
-	<footer class="bg-slate-700 h-10 w-full" />
 </div>
