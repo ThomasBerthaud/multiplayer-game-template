@@ -1,5 +1,5 @@
 import { DEFAULT_USER_PASSWORD } from '$env/static/private';
-import type { AuthResponse } from '@supabase/supabase-js';
+import type { AuthError, AuthResponse, PostgrestError } from '@supabase/supabase-js';
 import type { UserDTO } from '$lib/infrastructure/Users/UserDTO';
 import type { Result } from '$lib/application/Result';
 import { Err, Ok } from '$lib/application/Result';
@@ -9,7 +9,7 @@ export interface AuthRepositoryInterface {
 	logIn(userId: string, userName: string): Promise<AuthResponse>;
 	signUp(userId: string, userName: string): Promise<AuthResponse>;
 
-	getCurrentUser(): Promise<Result<UserDTO>>;
+	getCurrentUser(): Promise<Result<UserDTO, AuthError | PostgrestError>>;
 }
 
 export class AuthRepository implements AuthRepositoryInterface {
@@ -35,7 +35,7 @@ export class AuthRepository implements AuthRepositoryInterface {
 		});
 	}
 
-	async getCurrentUser(): Promise<Result<UserDTO>> {
+	async getCurrentUser(): Promise<Result<UserDTO, AuthError | PostgrestError>> {
 		const auth = await this.supabase.auth.getUser();
 		if (auth.error) {
 			return Err(auth.error);

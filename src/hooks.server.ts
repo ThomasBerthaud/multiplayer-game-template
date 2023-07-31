@@ -27,13 +27,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 	};
 
 	// Define all repositories
-	const gamesRepository = new GamesRepository(event.locals.supabase);
 	const authRepository = new AuthRepository(event.locals.supabase);
+	const gamesRepository = new GamesRepository(event.locals.supabase);
 	const userRepository = new UserRepository(event.locals.supabase, authRepository);
 
 	// Define all services
 	event.locals.authService = new AuthService(authRepository);
-	event.locals.userService = new UserService(userRepository);
+	event.locals.userService = new UserService(userRepository, gamesRepository);
 	event.locals.gamesService = new GamesService(gamesRepository);
 
 	return resolve(event, {

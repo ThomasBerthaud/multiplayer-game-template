@@ -13,12 +13,12 @@
 		"test:unit": "vitest run",
 		"test:unit:watch": "vitest",
 		"lint": "tsc --noEmit && eslint .",
-		"format": "prettier --plugin-search-dir . --write .",
+		"format": "prettier --write --plugin prettier-plugin-svelte .",
 		"db-types": "supabase gen types typescript --linked > src/lib/infrastructure/database.types.ts",
 		"prepare": "husky install"
 	},
 	"lint-staged": {
-		"*.{js,ts,svelte}": "eslint --cache",
+		"*.{js,ts,svelte}": "eslint --cache --fix",
 		"*.{js,ts,svelte,json,css,md}": "npm run format"
 	},
 	"dependencies": {
@@ -30,7 +30,6 @@
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
-		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/adapter-vercel": "^2.4.0",
 		"@sveltejs/kit": "^1.5.0",
 		"@types/uuid": "^9.0.1",
@@ -43,9 +42,9 @@
 		"husky": "^8.0.3",
 		"lint-staged": "^13.2.2",
 		"postcss": "^8.4.21",
-		"prettier": "^2.8.0",
-		"prettier-plugin-svelte": "^2.8.1",
-		"prettier-plugin-tailwindcss": "^0.2.8",
+		"prettier": "^3.0.0",
+		"prettier-plugin-svelte": "^3.0.3",
+		"prettier-plugin-tailwindcss": "^0.4.1",
 		"supabase": "^1.45.2",
 		"svelte": "^3.54.0",
 		"svelte-check": "^3.0.1",

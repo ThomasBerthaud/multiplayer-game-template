@@ -1,5 +1,9 @@
 import { redirect, fail, error } from '@sveltejs/kit';
 import type { Actions } from './$types';
+import { GameEntity } from '$lib/domain/Games/GameEntity';
+import { AuthError } from '@supabase/supabase-js';
+import { MaxPlayersError } from '$lib/domain/Users/errors/MaxPlayersError';
+import { GameAlreadyStartedError } from '$lib/domain/Users/errors/GameAlreadyStartedError';
 
 export const actions: Actions = {
 	join: async ({ request, locals: { gamesService, userService } }) => {
@@ -9,7 +13,8 @@ export const actions: Actions = {
 			return fail(400, { missingGameCode: true });
 		}
 
-		const gameResponse = await gamesService.getGame(gameCode.toString());
+		const gameId = GameEntity.getGameId(gameCode.toString());
+		const gameResponse = await gamesService.getGame(gameId);
 
 		if (gameResponse.error) {
 			console.error(gameResponse.error);
@@ -20,7 +25,24 @@ export const actions: Actions = {
 
 		if (userResponse.error) {
 			console.error(userResponse.error);
-			throw error(500, 'something went wrong');
+			// User is not logged in
+			if (userResponse.error instanceof AuthError) {
+				throw redirect(300, '/');
+			}
+			// No more room in the game
+			if (userResponse.error instanceof MaxPlayersError) {
+				return fail(403, { partyIsFull: true });
+			}
+			// Game has already started
+			if (userResponse.error instanceof GameAlreadyStartedError) {
+				return fail(403, { gameAlreadyStarted: true });
+			}
+			// User is already in the game
+			if (userResponse.error.code === '23505') {
+				// ignore
+			} else {
+				throw error(500, 'could not join game');
+			}
 		}
 
 		throw redirect(303, `/games/${gameResponse.data.gameCode}`);

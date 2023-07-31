@@ -1,6 +1,6 @@
 import type { AuthRepositoryInterface } from '$lib/infrastructure/Auth/AuthRepository';
 import { Err, Ok, type Result } from '$lib/application/Result';
-import type { AuthResponse } from '@supabase/supabase-js';
+import type { AuthError, AuthResponse } from '@supabase/supabase-js';
 import { v4 as uuid } from 'uuid';
 
 export class AuthService {
@@ -9,7 +9,7 @@ export class AuthService {
 	async authenticateUser(
 		userId: string | undefined,
 		userName: string
-	): Promise<Result<{ userId: string }>> {
+	): Promise<Result<{ userId: string }, AuthError>> {
 		// TODO refactor authentication
 		let response: AuthResponse;
 		if (userId) {
