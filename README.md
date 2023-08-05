@@ -16,7 +16,7 @@ lancer en mode developpement
 npm run dev
 ```
 
-Faire un build du projet
+Faire un build du projet en mode production
 
 ```
 npm run build

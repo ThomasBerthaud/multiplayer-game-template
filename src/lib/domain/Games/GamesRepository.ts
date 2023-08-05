@@ -1,8 +1,8 @@
-import type { GameDTO } from '$lib/infrastructure/Games/GameDTO';
-import type { NewGameDTO } from '$lib/infrastructure/Games/NewGameDTO';
+import type { GameDTO } from './GameDTO';
+import type { NewGameDTO } from './NewGameDTO';
 import { mapToResult, type Result } from '$lib/application/Result';
-import type { NumberLike } from '../Hashid';
-import type { AppSupabaseClient } from '$lib/infrastructure/AppSupabaseClient';
+import type { NumberLike } from '$lib/application/Hashid';
+import type { AppSupabaseClient } from '$lib/application/AppSupabaseClient';
 
 export interface GamesRepositoryInterface {
 	getGame(gameId: NumberLike): Promise<Result<GameDTO>>;

@@ -1,12 +1,12 @@
 import type { Result } from '$lib/application/Result';
 import { Err } from '$lib/application/Result';
-import type { UserRepositoryInterface } from '$lib/infrastructure/Users/UserRepository';
+import type { UserRepositoryInterface } from '$lib/domain/Users';
 import { UserEntity } from './UserEntity';
-import type { NumberLike } from '$lib/infrastructure/Hashid';
+import type { NumberLike } from '$lib/application/Hashid';
 import type { AuthError, PostgrestError } from '@supabase/supabase-js';
-import type { GamesRepositoryInterface } from '$lib/infrastructure/Games/GamesRepository';
-import type { AddGameError } from '$lib/domain/Users/errors';
-import { GameAlreadyStartedError, MaxPlayersError } from '$lib/domain/Users/errors';
+import type { GamesRepositoryInterface } from '$lib/domain/Games';
+import type { AddGameError } from './errors';
+import { GameAlreadyStartedError, MaxPlayersError } from './errors';
 
 export class UserService {
 	constructor(

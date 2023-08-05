@@ -1,8 +1,8 @@
 import type { Result } from '$lib/application/Result';
-import type { GamesRepositoryInterface } from '$lib/infrastructure/Games/GamesRepository';
-import type { NewGameDTO } from '$lib/infrastructure/Games/NewGameDTO';
+import type { GamesRepositoryInterface } from './GamesRepository';
+import type { NewGameDTO } from './NewGameDTO';
 import { GameEntity } from './GameEntity';
-import type { NumberLike } from '$lib/infrastructure/Hashid';
+import type { NumberLike } from '$lib/application/Hashid';
 
 export class GamesService {
 	constructor(private repository: GamesRepositoryInterface) {}

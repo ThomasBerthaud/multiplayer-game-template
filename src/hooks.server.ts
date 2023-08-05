@@ -1,11 +1,8 @@
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
-import { AuthService } from '$lib/domain/Auth/AuthService';
-import { GamesService } from '$lib/domain/Games/GamesService';
-import { UserService } from '$lib/domain/Users/UserService';
-import { AuthRepository } from '$lib/infrastructure/Auth/AuthRepository';
-import { GamesRepository } from '$lib/infrastructure/Games/GamesRepository';
-import { UserRepository } from '$lib/infrastructure/Users/UserRepository';
-import type { Database } from '$lib/infrastructure/database.types';
+import { AuthRepository, AuthService } from '$lib/domain/Auth';
+import { GamesRepository, GamesService } from '$lib/domain/Games';
+import { UserRepository, UserService } from '$lib/domain/Users';
+import type { Database } from '$lib/application/database.types';
 import { createSupabaseServerClient } from '@supabase/auth-helpers-sveltekit';
 import type { Handle } from '@sveltejs/kit';
 

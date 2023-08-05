@@ -1,6 +1,6 @@
+import type { AuthError, PostgrestError } from '@supabase/supabase-js';
 import type { GameAlreadyStartedError } from './GameAlreadyStartedError';
 import type { MaxPlayersError } from './MaxPlayersError';
-import type { AuthError, PostgrestError } from '@supabase/supabase-js';
 
 // Domain errors
 export * from './GameAlreadyStartedError';

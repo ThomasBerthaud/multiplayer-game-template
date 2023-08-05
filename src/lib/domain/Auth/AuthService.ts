@@ -1,4 +1,4 @@
-import type { AuthRepositoryInterface } from '$lib/infrastructure/Auth/AuthRepository';
+import type { AuthRepositoryInterface } from '$lib/domain/Auth/AuthRepository';
 import { Err, Ok, type Result } from '$lib/application/Result';
 import type { AuthError, AuthResponse } from '@supabase/supabase-js';
 import { v4 as uuid } from 'uuid';

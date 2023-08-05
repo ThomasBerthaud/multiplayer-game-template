@@ -1,4 +1,4 @@
-import type { Database } from '../database.types';
+import type { Database } from '$lib/application/database.types';
 
 export type GameDTO = Database['public']['Tables']['games']['Row'];
 

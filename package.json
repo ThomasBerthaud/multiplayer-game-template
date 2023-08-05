@@ -14,7 +14,7 @@
 		"test:unit:watch": "vitest",
 		"lint": "tsc --noEmit && eslint .",
 		"format": "prettier --write --plugin prettier-plugin-svelte .",
-		"db-types": "supabase gen types typescript --linked > src/lib/infrastructure/database.types.ts",
+		"db-types": "supabase gen types typescript --linked > src/lib/application/database.types.ts",
 		"prepare": "husky install"
 	},
 	"lint-staged": {

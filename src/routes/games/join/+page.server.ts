@@ -1,9 +1,8 @@
-import { redirect, fail, error } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { GameEntity } from '$lib/domain/Games/GameEntity';
+import { GameEntity } from '$lib/domain/Games';
 import { AuthError } from '@supabase/supabase-js';
-import { MaxPlayersError } from '$lib/domain/Users/errors/MaxPlayersError';
-import { GameAlreadyStartedError } from '$lib/domain/Users/errors/GameAlreadyStartedError';
+import { GameAlreadyStartedError, MaxPlayersError } from '$lib/domain/Users';
 
 export const actions: Actions = {
 	join: async ({ request, locals: { gamesService, userService } }) => {

@@ -1,5 +1,5 @@
 import type { Result } from '$lib/application/Result';
-import type { UserDTO } from '$lib/infrastructure/Users/UserDTO';
+import type { UserDTO } from './UserDTO';
 
 export class UserEntity {
 	readonly id: number;

@@ -1,9 +1,9 @@
 import { DEFAULT_USER_PASSWORD } from '$env/static/private';
 import type { AuthError, AuthResponse, PostgrestError } from '@supabase/supabase-js';
-import type { UserDTO } from '$lib/infrastructure/Users/UserDTO';
+import type { UserDTO } from '$lib/domain/Users';
 import type { Result } from '$lib/application/Result';
 import { Err, Ok } from '$lib/application/Result';
-import type { AppSupabaseClient } from '$lib/infrastructure/AppSupabaseClient';
+import type { AppSupabaseClient } from '$lib/application/AppSupabaseClient';
 
 export interface AuthRepositoryInterface {
 	logIn(userId: string, userName: string): Promise<AuthResponse>;

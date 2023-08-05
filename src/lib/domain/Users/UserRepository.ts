@@ -1,8 +1,8 @@
 import { Err, mapToResult, type Result } from '$lib/application/Result';
 import type { UserDTO } from './UserDTO';
-import type { AuthRepositoryInterface } from '$lib/infrastructure/Auth/AuthRepository';
-import type { AppSupabaseClient } from '$lib/infrastructure/AppSupabaseClient';
-import type { NumberLike } from '$lib/infrastructure/Hashid';
+import type { AuthRepositoryInterface } from '$lib/domain/Auth';
+import type { AppSupabaseClient } from '$lib/application/AppSupabaseClient';
+import type { NumberLike } from '$lib/application/Hashid';
 import type { AuthError, PostgrestError } from '@supabase/supabase-js';
 
 export interface UserRepositoryInterface {

@@ -1,5 +1,5 @@
-import type { GameDTO, GameStatusDTO } from '$lib/infrastructure/Games/GameDTO';
-import { decodeHash, encodeHash, type NumberLike } from '$lib/infrastructure/Hashid';
+import type { GameDTO, GameStatusDTO } from './GameDTO';
+import { decodeHash, encodeHash, type NumberLike } from '$lib/application/Hashid';
 import type { Result } from '$lib/application/Result';
 
 export type GameStatus = GameStatusDTO;
