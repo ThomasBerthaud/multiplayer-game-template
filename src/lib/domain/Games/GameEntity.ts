@@ -32,8 +32,8 @@ export class GameEntity {
 		};
 	}
 
-	static getGameId(gameCode: string): NumberLike {
-		return decodeHash(gameCode)[0];
+	static getGameId(gameCode: string): number {
+		return decodeHash(gameCode)[0] as number;
 	}
 
 	static buildFromDTO(result: Result<GameDTO>): Result<GameEntity> {

@@ -1,10 +1,10 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { GameEntity } from '$lib/domain/Games';
-import { GameAlreadyStartedError, MaxPlayersError } from '$lib/domain/Users';
+import { GameAlreadyStartedError, MaxPlayersError, userSsePool } from '$lib/domain/Users';
 
 export const load: PageServerLoad = async ({ params, locals: { gamesService, userService } }) => {
-	const gameId = GameEntity.getGameId(params.slug);
+	const gameId = GameEntity.getGameId(params.gameCode);
 	const game = await gamesService.getGame(gameId);
 	if (game.error) {
 		console.error(game.error);
@@ -27,7 +27,7 @@ export const actions: Actions = {
 		console.log('TODO start game');
 	},
 	join: async ({ params, locals: { gamesService, userService } }) => {
-		const gameId = GameEntity.getGameId(params.slug);
+		const gameId = GameEntity.getGameId(params.gameCode);
 		const gameResponse = await gamesService.getGame(gameId);
 
 		if (gameResponse.error) {
@@ -47,10 +47,23 @@ export const actions: Actions = {
 			}
 			throw error(404, "couldn't join game");
 		}
+
+		await userService.notifyLobbyPlayers(gameResponse.data.id, {
+			event: 'join-lobby',
+			data: { game: gameResponse.data, player: userResponse.data }
+		});
 	},
 	leave: async ({ params, locals: { userService } }) => {
-		const gameId = GameEntity.getGameId(params.slug);
-		await userService.leaveGame(gameId);
+		const gameId = GameEntity.getGameId(params.gameCode);
+		const userResponse = await userService.leaveGame(gameId);
+
+		// TODO should not be manual. Use supabase realtime instead
+		if (!userResponse.error) {
+			await userService.notifyLobbyPlayers(gameId, {
+				event: 'leave-lobby',
+				data: { player: userResponse.data }
+			});
+		}
 		throw redirect(303, '/');
 	}
 };

@@ -6,9 +6,8 @@ import type { NumberLike } from '$lib/application/Hashid';
 import type { AuthError, PostgrestError } from '@supabase/supabase-js';
 
 export interface UserRepositoryInterface {
-	addToGame(gameId: number): Promise<Result<null, AuthError | PostgrestError>>;
-
-	leaveGame(gameId: NumberLike): Promise<Result<null, AuthError | PostgrestError>>;
+	addToGame(gameId: number): Promise<Result<UserDTO, AuthError | PostgrestError>>;
+	leaveGame(gameId: NumberLike): Promise<Result<UserDTO, AuthError | PostgrestError>>;
 	getPlayers(gameId: number): Promise<Result<UserDTO[]>>;
 }
 
@@ -18,7 +17,7 @@ export class UserRepository implements UserRepositoryInterface {
 		private authRepository: AuthRepositoryInterface
 	) {}
 
-	async addToGame(gameId: number): Promise<Result<null, AuthError | PostgrestError>> {
+	async addToGame(gameId: number): Promise<Result<UserDTO, AuthError | PostgrestError>> {
 		const user = await this.authRepository.getCurrentUser();
 		if (user.error) {
 			return Err(user.error);
@@ -27,10 +26,14 @@ export class UserRepository implements UserRepositoryInterface {
 			.from('games_users')
 			.insert({ game_id: gameId, user_id: user.data.id });
 
-		return mapToResult(response);
+		if (response.error) {
+			return Err(response.error);
+		}
+
+		return user;
 	}
 
-	async leaveGame(gameId: number): Promise<Result<null, AuthError | PostgrestError>> {
+	async leaveGame(gameId: number): Promise<Result<UserDTO, AuthError | PostgrestError>> {
 		const user = await this.authRepository.getCurrentUser();
 		if (user.error) {
 			return Err(user.error);
@@ -40,7 +43,11 @@ export class UserRepository implements UserRepositoryInterface {
 			.delete()
 			.match({ game_id: gameId, user_id: user.data.id });
 
-		return mapToResult(response);
+		if (response.error) {
+			return Err(response.error);
+		}
+
+		return user;
 	}
 
 	async getPlayers(gameId: number): Promise<Result<UserDTO[]>> {

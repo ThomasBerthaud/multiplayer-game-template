@@ -2,7 +2,7 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { GameEntity } from '$lib/domain/Games';
 import { AuthError } from '@supabase/supabase-js';
-import { GameAlreadyStartedError, MaxPlayersError } from '$lib/domain/Users';
+import { GameAlreadyStartedError, MaxPlayersError, userSsePool } from '$lib/domain/Users';
 
 export const actions: Actions = {
 	join: async ({ request, locals: { gamesService, userService } }) => {
@@ -42,6 +42,13 @@ export const actions: Actions = {
 			} else {
 				throw error(500, 'could not join game');
 			}
+		}
+
+		if (userResponse.data) {
+			await userService.notifyLobbyPlayers(gameId, {
+				event: 'join-lobby',
+				data: { game: gameResponse.data, player: userResponse.data }
+			});
 		}
 
 		throw redirect(303, `/games/${gameResponse.data.gameCode}`);

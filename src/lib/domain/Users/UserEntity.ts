@@ -1,5 +1,6 @@
 import type { Result } from '$lib/application/Result';
 import type { UserDTO } from './UserDTO';
+import type { PostgrestError } from '@supabase/supabase-js';
 
 export class UserEntity {
 	readonly id: number;
@@ -23,10 +24,17 @@ export class UserEntity {
 		};
 	}
 
-	static buildFromDTO(result: Result<UserDTO[]>): Result<UserEntity[]> {
+	static buildFromDTO<T>(result: Result<UserDTO, T>): Result<UserEntity, T>;
+	static buildFromDTO<T>(result: Result<UserDTO[], T>): Result<UserEntity[], T>;
+	static buildFromDTO(result: Result<UserDTO[] | UserDTO>): Result<UserEntity[] | UserEntity> {
 		if (result.error) {
 			return result;
 		}
-		return { ...result, data: result.data.map((dto) => new this(dto)) };
+		return {
+			...result,
+			data: Array.isArray(result.data)
+				? result.data.map((dto) => new this(dto))
+				: new this(result.data)
+		};
 	}
 }

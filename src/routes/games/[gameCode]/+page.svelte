@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
-	import type { UserEntity } from '$lib/domain/Users/UserEntity';
 	import type { PageData, ActionData } from './$types';
+	import { initUserSseSource } from '$lib/domain/Users';
 
 	export let data: PageData;
 	export let form: ActionData;
 
-	function isYou(player: UserEntity): boolean {
+	initUserSseSource(data.user, data.players);
+
+	function isYou(player: PageData['players'][0]): boolean {
 		return player.userId === data.user.id;
 	}
 
@@ -17,7 +19,7 @@
 		data.game.status === 'pending' && data.players.some((p) => p.userId === you?.userId);
 </script>
 
-<h1>Partie n° {$page.params.slug}</h1>
+<h1>Partie n° {$page.params.gameCode}</h1>
 <section>
 	<h3>Joueurs dans la partie ({data.players.length}/{data.game.totalPlayers})</h3>
 	{#if form?.partyIsFull}
@@ -27,7 +29,6 @@
 		{#each data.players as player}
 			<li>
 				{player.userName}
-				<!--TODO fix DTO on client side-->
 				{#if isYou(player)}
 					(Vous)
 				{/if}
@@ -41,7 +42,7 @@
 	{:else if isInParty}
 		<p>En attente du lancement de la partie</p>
 	{:else}
-		<!--TODO make reusable component-->
+		<!--TODO make reusable component ?-->
 		<form method="POST" action="?/join" use:enhance>
 			<button type="submit">Rejoindre la partie</button>
 		</form>

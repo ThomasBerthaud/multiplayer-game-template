@@ -8,7 +8,6 @@ import type { AppSupabaseClient } from '$lib/application/AppSupabaseClient';
 export interface AuthRepositoryInterface {
 	logIn(userId: string, userName: string): Promise<AuthResponse>;
 	signUp(userId: string, userName: string): Promise<AuthResponse>;
-
 	getCurrentUser(): Promise<Result<UserDTO, AuthError | PostgrestError>>;
 }
 
@@ -18,14 +17,14 @@ export class AuthRepository implements AuthRepositoryInterface {
 	logIn(userId: string, userName: string): Promise<AuthResponse> {
 		// TODO update userName
 		return this.supabase.auth.signInWithPassword({
-			email: `${userId}@yopmail.com`,
+			email: `${userId}@tberthaud.com`,
 			password: DEFAULT_USER_PASSWORD
 		});
 	}
 
 	signUp(userId: string, userName: string): Promise<AuthResponse> {
 		return this.supabase.auth.signUp({
-			email: `${userId}@yopmail.com`,
+			email: `${userId}@tbertaud.com`,
 			password: DEFAULT_USER_PASSWORD,
 			options: {
 				data: {
