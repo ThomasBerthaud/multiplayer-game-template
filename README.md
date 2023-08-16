@@ -1,63 +1,70 @@
-# Multiplater game template
+# Multiplayer Game Template
 
-Ce projet est un template pour créer un jeu multijoueur en ligne. Il est basé sur [svelteKit](https://kit.svelte.dev/) et [Supabase](https://supabase.io/).
+This project is a template for creating an online multiplayer game. It is based on [SvelteKit](https://kit.svelte.dev/) and [Supabase](https://supabase.io/).
 
-## Installation du projet
+## Project Installation
 
-installer les dépendances
+To install the dependencies:
 
 ```bash
 npm install
 ```
 
-lancer en mode developpement
+To start in development mode:
 
 ```bash
 npm run dev
 ```
 
-Faire un build du projet en mode production
+To build an optimized version of the project for production:
 
 ```
 npm run build
 ```
 
-Ce projet utilise supabase comme solution backend, pour pouvoir acceder à la base de donnée, il faut créer un fichier **.env** et ajouter :
+This project uses Supabase as the backend solution. To access the database, you need to create a **.env** file and add the following lines, replacing the values with those of your Supabase project:
 
-```bash
+```dotenv
 PUBLIC_SUPABASE_URL="SUPABE_URL"
 PUBLIC_SUPABASE_ANON_KEY="ANON_KEY"
 ```
 
-en remplaçant les valeurs par celles de votre projet supabase.
+You also need to provide a hash salt and default password for anonymous login :
 
-## Installation de la base de données
+```dotenv
+DEFAULT_USER_PASSWORD="default_password"
+HASH_SALT="hash_salt"
+```
 
-### Population de la base de données
+see .env.example for a list of all the environment variables.
 
-executez le script de population de donnée dans le dossier [script](./scripts/) (TODO)
+## Database Installation
 
-### récupération du typage typescript de la base de données
+### Populating the Database
+
+Execute the data population script located in the [scripts](./scripts/) folder (TODO).
+
+### Obtaining TypeScript Typing for the Database
 
 ```bash
 npm run db-types
 ```
 
-## Tests automatisés
+## Automated Testing
 
-Le projet est couvert par des tests unitaires
+The project is covered by unit tests:
 
 ```bash
 npm run test:unit
 ```
 
-et des tests d'intégration
+as well as integration tests:
 
 ```bash
 npm run test
 ```
 
-Il est aussi possible d'executer eslint
+It's also possible to run eslint:
 
 ```bash
 npm run lint
