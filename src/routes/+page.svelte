@@ -9,7 +9,6 @@
 	$: ({ user } = data);
 </script>
 
-<h1 class="px-4 py-3 text-center text-5xl">Le jeu des cacahuetes</h1>
 <!--TODO : faire plutot un guard au lieu d'un if/else-->
 {#if user}
 	<Home {user} />

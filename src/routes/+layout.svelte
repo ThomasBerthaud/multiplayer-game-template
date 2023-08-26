@@ -1,10 +1,11 @@
 <script lang="ts">
-	import '../app.css';
+	import '../app.postcss';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
 	import { inject } from '@vercel/analytics';
 	import { dev } from '$app/environment';
+	import { AppBar, AppShell } from '@skeletonlabs/skeleton';
 
 	export let data: LayoutData;
 
@@ -26,8 +27,21 @@
 	<title>Multiplayer game</title>
 </svelte:head>
 
-<div class="flex h-screen flex-col justify-between">
-	<div class="container mx-auto flex-1 p-4">
+<AppShell>
+	<svelte:fragment slot="header">
+		<AppBar slotDefault="place-self-center">
+			<svelte:fragment slot="lead">
+				<div>
+					<!--TODO Back button-->
+				</div>
+			</svelte:fragment>
+			<svelte:fragment slot="default">
+				<strong class="text-xl text-center uppercase">Multiplayer Game </strong>
+			</svelte:fragment>
+		</AppBar>
+	</svelte:fragment>
+	<svelte:fragment slot="pageHeader"></svelte:fragment>
+	<div class="container mx-auto my-8">
 		<slot />
 	</div>
-</div>
+</AppShell>
