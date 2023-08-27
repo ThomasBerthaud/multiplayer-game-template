@@ -5,7 +5,7 @@
 	import type { LayoutData } from './$types';
 	import { inject } from '@vercel/analytics';
 	import { dev } from '$app/environment';
-	import { AppBar, AppShell } from '@skeletonlabs/skeleton';
+	import { AppBar, AppShell, autoModeWatcher, LightSwitch } from '@skeletonlabs/skeleton';
 
 	export let data: LayoutData;
 
@@ -25,6 +25,7 @@
 
 <svelte:head>
 	<title>Multiplayer game</title>
+	{@html `<script>${autoModeWatcher.toString()} autoModeWatcher();</script>`}
 </svelte:head>
 
 <AppShell>
@@ -37,6 +38,9 @@
 			</svelte:fragment>
 			<svelte:fragment slot="default">
 				<strong class="text-xl text-center uppercase">Multiplayer Game </strong>
+			</svelte:fragment>
+			<svelte:fragment slot="trail">
+				<LightSwitch />
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>

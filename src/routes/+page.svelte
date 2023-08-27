@@ -13,5 +13,6 @@
 {#if user}
 	<Home {user} />
 {:else}
+	<!--TODO : prerender login form-->
 	<UserNameForm {form} />
 {/if}

@@ -9,6 +9,7 @@ env:
   PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
   PUBLIC_SUPABASE_ANON_KEY: ${{ vars.PUBLIC_SUPABASE_ANON_KEY }}
   DEFAULT_USER_PASSWORD: ${{ secrets.DEFAULT_USER_PASSWORD }}
+  HASH_SALT: ${{ secrets.HASH_SALT }}
 
 jobs:
   checks:
@@ -22,7 +23,7 @@ jobs:
           node-version: 16.x
           cache: 'npm'
       - run: npm ci
-      - run: npm run lint
+      - run: npm run check
       - run: npm run test:unit
       - run: npx playwright install --with-deps
       - run: npm run test
