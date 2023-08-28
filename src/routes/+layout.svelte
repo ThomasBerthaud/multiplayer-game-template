@@ -5,7 +5,8 @@
 	import type { LayoutData } from './$types';
 	import { inject } from '@vercel/analytics';
 	import { dev } from '$app/environment';
-	import { AppBar, AppShell, autoModeWatcher, LightSwitch } from '@skeletonlabs/skeleton';
+	import { AppBar, AppShell, autoModeWatcher, LightSwitch, Toast } from '@skeletonlabs/skeleton';
+	import { initializeStores } from '@skeletonlabs/skeleton';
 
 	export let data: LayoutData;
 
@@ -21,6 +22,9 @@
 
 	// Vercel analytics
 	inject({ mode: dev ? 'development' : 'production' });
+
+	// Skeleton stores
+	initializeStores();
 </script>
 
 <svelte:head>
@@ -28,6 +32,7 @@
 	{@html `<script>${autoModeWatcher.toString()} autoModeWatcher();</script>`}
 </svelte:head>
 
+<Toast />
 <AppShell>
 	<svelte:fragment slot="header">
 		<AppBar slotDefault="place-self-center">
