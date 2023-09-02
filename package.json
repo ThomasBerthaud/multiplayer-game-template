@@ -22,6 +22,7 @@
 		"*.{js,ts,svelte,json,css,md}": "npm run format"
 	},
 	"dependencies": {
+		"@fortawesome/fontawesome-free": "^6.4.2",
 		"@supabase/auth-helpers-sveltekit": "^0.9.0",
 		"@supabase/supabase-js": "^2.12.0",
 		"@vercel/analytics": "^1.0.1",
