@@ -47,7 +47,7 @@
 		"eslint-plugin-svelte3": "^4.0.0",
 		"husky": "^8.0.3",
 		"lint-staged": "^13.2.2",
-		"postcss": "^8.4.24",
+		"postcss": "^8.4.31",
 		"prettier": "^3.0.0",
 		"prettier-plugin-svelte": "^3.0.3",
 		"supabase": "^1.45.2",
