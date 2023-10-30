@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-test('index page has expected h1', async ({ page }) => {
+test('index page has login form', async ({ page }) => {
 	await page.goto('/');
-	const title = page.getByRole('heading', { name: 'Le jeu des cacahuetes' });
-	await expect(title).toBeVisible();
+	const userName = page.getByText("Nom d'utilisateur :");
+	await expect(userName).toBeVisible();
 });
