@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
-	import type { UserEntity } from '$lib/domain/Users/UserEntity';
 	import type { PageData, ActionData } from './$types';
 	import Share from '$lib/ui/Share.svelte';
+	import type { UserEntity } from '$lib/domain/Users/UserEntity';
+	import type { DTO } from '$lib/domain/DTO';
 
 	export let data: PageData;
 	export let form: ActionData;
 
-	function isYou(player: UserEntity): boolean {
+	function isYou(player: DTO<UserEntity>): boolean {
 		return player.userId === data.user.id;
 	}
 

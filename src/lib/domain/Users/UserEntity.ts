@@ -1,14 +1,13 @@
-import type { Result } from '$lib/application/Result';
-import type { UserDTO } from './UserDTO';
+import type { User } from './User';
+import { Entity } from '$lib/domain/Entity';
 
-export class UserEntity {
-	readonly id: number;
+export class UserEntity extends Entity {
 	userId: string;
 	insertedAt: string;
 	userName: string;
 
-	protected constructor(dto: UserDTO) {
-		this.id = dto.id;
+	constructor(dto: User) {
+		super(dto.id);
 		this.userId = dto.user_id;
 		this.insertedAt = dto.inserted_at;
 		this.userName = dto.user_name;
@@ -21,12 +20,5 @@ export class UserEntity {
 			insertedAt: this.insertedAt,
 			userName: this.userName
 		};
-	}
-
-	static buildFromDTO(result: Result<UserDTO[]>): Result<UserEntity[]> {
-		if (result.error) {
-			return result;
-		}
-		return { ...result, data: result.data.map((dto) => new this(dto)) };
 	}
 }

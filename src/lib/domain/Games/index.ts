@@ -1,4 +1,4 @@
-export * from './GameDTO';
+export * from './Game';
 export * from './GameEntity';
 export * from './NewGameDTO';
 export * from './GamesService';

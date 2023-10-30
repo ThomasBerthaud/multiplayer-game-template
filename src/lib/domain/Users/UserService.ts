@@ -38,6 +38,6 @@ export class UserService {
 
 	async getPlayers(gameId: number): Promise<Result<UserEntity[], AuthError | PostgrestError>> {
 		const response = await this.repository.getPlayers(gameId);
-		return UserEntity.buildFromDTO(response);
+		return UserEntity.build(response);
 	}
 }

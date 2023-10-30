@@ -1,4 +1,4 @@
-export * from './UserDTO';
+export * from './User';
 export * from './UserEntity';
 export * from './UserService';
 export * from './UserRepository';

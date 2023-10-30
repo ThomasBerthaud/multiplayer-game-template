@@ -1,5 +1,5 @@
 import { Err, mapToResult, type Result } from '$lib/application/Result';
-import type { UserDTO } from './UserDTO';
+import type { User } from './User';
 import type { AuthRepositoryInterface } from '$lib/domain/Auth';
 import type { AppSupabaseClient } from '$lib/application/AppSupabaseClient';
 import type { NumberLike } from '$lib/application/Hashid';
@@ -9,7 +9,7 @@ export interface UserRepositoryInterface {
 	addToGame(gameId: number): Promise<Result<null, AuthError | PostgrestError>>;
 
 	leaveGame(gameId: NumberLike): Promise<Result<null, AuthError | PostgrestError>>;
-	getPlayers(gameId: number): Promise<Result<UserDTO[]>>;
+	getPlayers(gameId: number): Promise<Result<User[]>>;
 }
 
 export class UserRepository implements UserRepositoryInterface {
@@ -43,7 +43,7 @@ export class UserRepository implements UserRepositoryInterface {
 		return mapToResult(response);
 	}
 
-	async getPlayers(gameId: number): Promise<Result<UserDTO[]>> {
+	async getPlayers(gameId: number): Promise<Result<User[]>> {
 		const response = await this.supabase
 			.from('users')
 			.select(`*, games_users!inner(game_id)`)
