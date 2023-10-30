@@ -12,7 +12,6 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test:unit": "vitest run",
 		"test:unit:watch": "vitest",
-		"lint": "tsc --noEmit && eslint .",
 		"format": "prettier --write --plugin prettier-plugin-svelte .",
 		"db-types": "supabase gen types typescript --linked > src/lib/application/database.types.ts",
 		"prepare": "husky install"
@@ -25,7 +24,6 @@
 		"@fortawesome/fontawesome-free": "^6.4.2",
 		"@supabase/auth-helpers-sveltekit": "^0.9.0",
 		"@supabase/supabase-js": "^2.12.0",
-		"@vercel/analytics": "^1.0.1",
 		"hashids": "^2.2.11",
 		"uuid": "^9.0.0"
 	},

@@ -3,8 +3,6 @@
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
-	import { inject } from '@vercel/analytics';
-	import { dev } from '$app/environment';
 	import { AppBar, AppShell, autoModeWatcher, LightSwitch, Toast } from '@skeletonlabs/skeleton';
 	import { initializeStores } from '@skeletonlabs/skeleton';
 
@@ -19,9 +17,6 @@
 
 		return () => data.subscription.unsubscribe();
 	});
-
-	// Vercel analytics
-	inject({ mode: dev ? 'development' : 'production' });
 
 	// Skeleton stores
 	initializeStores();

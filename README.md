@@ -64,8 +64,8 @@ as well as integration tests:
 npm run test
 ```
 
-It's also possible to run eslint:
+It's also possible to run svelte-check to check for type errors:
 
 ```bash
-npm run lint
+npm run check
 ```
