@@ -9,11 +9,11 @@ export class GamesService {
 
 	async getGame(gameId: NumberLike) {
 		const result = await this.repository.getGame(gameId);
-		return GameEntity.buildFromDTO(result);
+		return GameEntity.buildOne(result);
 	}
 
 	async createGame(newGame: NewGameDTO): Promise<Result<GameEntity>> {
 		const result = await this.repository.createGame(newGame);
-		return GameEntity.buildFromDTO(result);
+		return GameEntity.buildOne(result);
 	}
 }
