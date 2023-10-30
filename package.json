@@ -34,7 +34,7 @@
 		"@skeletonlabs/skeleton": "^2.0.0-rc.3",
 		"@skeletonlabs/tw-plugin": "^0.1.0-rc.7",
 		"@sveltejs/adapter-vercel": "^2.4.0",
-		"@sveltejs/kit": "^1.5.0",
+		"@sveltejs/kit": "^1.27.2",
 		"@tailwindcss/forms": "^0.5.5",
 		"@tailwindcss/typography": "^0.5.9",
 		"@types/node": "^20.5.6",
