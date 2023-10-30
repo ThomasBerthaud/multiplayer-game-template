@@ -1,10 +1,13 @@
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
-import { AuthRepository, AuthService } from '$lib/domain/Auth';
-import { GamesRepository, GamesService } from '$lib/domain/Games';
-import { UserRepository, UserService } from '$lib/domain/Users';
+import { AuthRepository } from '$lib/domain/Auth/AuthRepository';
+import { AuthService } from '$lib/domain/Auth/AuthService';
 import type { Database } from '$lib/application/database.types';
 import { createSupabaseServerClient } from '@supabase/auth-helpers-sveltekit';
 import type { Handle } from '@sveltejs/kit';
+import { GamesRepository } from '$lib/domain/Games/GamesRepository';
+import { UserRepository } from '$lib/domain/Users/UserRepository';
+import { UserService } from '$lib/domain/Users/UserService';
+import { GamesService } from '$lib/domain/Games/GamesService';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.supabase = createSupabaseServerClient<Database>({

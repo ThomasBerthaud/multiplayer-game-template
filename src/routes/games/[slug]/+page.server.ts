@@ -1,7 +1,8 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { GameEntity } from '$lib/domain/Games';
-import { GameAlreadyStartedError, MaxPlayersError } from '$lib/domain/Users';
+import { GameEntity } from '$lib/domain/Games/GameEntity';
+import { MaxPlayersError } from '$lib/domain/Users/errors/MaxPlayersError';
+import { GameAlreadyStartedError } from '$lib/domain/Users/errors/GameAlreadyStartedError';
 
 export const load: PageServerLoad = async ({ params, locals: { gamesService, userService } }) => {
 	const gameId = GameEntity.getGameId(params.slug);
