@@ -4,6 +4,8 @@ create table games_users (
   primary key (game_id, user_id)
 );
 
+-- To see games in real-time.
+alter publication supabase_realtime add table public.games_users;
 
 -- create table users (
 --   "id" serial primary key,
