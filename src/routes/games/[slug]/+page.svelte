@@ -5,9 +5,32 @@
 	import Share from '$lib/ui/Share.svelte';
 	import type { UserEntity } from '$lib/domain/Users/UserEntity';
 	import type { DTO } from '$lib/domain/DTO';
+	import { onDestroy, onMount } from 'svelte';
+	import type { RealtimeChannel } from '@supabase/supabase-js';
 
 	export let data: PageData;
 	export let form: ActionData;
+
+	let partyChannel: RealtimeChannel;
+
+	onMount(() => {
+		// Join a room/topic. Can be anything except for 'realtime'.
+		partyChannel = data.supabase.channel('room-1');
+
+		// Simple function to log any messages we receive
+		function messageReceived(payload) {
+			console.log(payload);
+		}
+
+		// Subscribe to the Channel
+		partyChannel
+			.on('broadcast', { event: 'test' }, (payload) => messageReceived(payload))
+			.subscribe();
+	});
+
+	onDestroy(() => {
+		partyChannel?.unsubscribe();
+	});
 
 	function isYou(player: DTO<UserEntity>): boolean {
 		return player.userId === data.user.id;

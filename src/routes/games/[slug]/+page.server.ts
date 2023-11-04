@@ -4,7 +4,10 @@ import { GameEntity } from '$lib/domain/Games/GameEntity';
 import { MaxPlayersError } from '$lib/domain/Users/errors/MaxPlayersError';
 import { GameAlreadyStartedError } from '$lib/domain/Users/errors/GameAlreadyStartedError';
 
-export const load: PageServerLoad = async ({ params, locals: { gamesService, userService } }) => {
+export const load: PageServerLoad = async ({
+	params,
+	locals: { supabase, gamesService, userService }
+}) => {
 	const gameId = GameEntity.getGameId(params.slug);
 	const game = await gamesService.getGame(gameId);
 	if (game.error) {
@@ -16,6 +19,35 @@ export const load: PageServerLoad = async ({ params, locals: { gamesService, use
 		console.error(game.error);
 		error(404, 'game not found');
 	}
+
+	const roomOne = supabase.channel('room-1');
+	roomOne.subscribe();
+
+	const partyChannel = supabase
+		.channel('schema-db-changes')
+		.on(
+			'postgres_changes',
+			{
+				event: '*',
+				schema: 'public',
+				table: 'games_users'
+			},
+			async (payload) => {
+				try {
+					console.log(payload);
+					const userId = payload.eventType === 'DELETE' ? payload.old.user_id : payload.new.user_id;
+					const userResponse = await supabase.from('users').select().match({ id: userId }).single();
+					roomOne.send({
+						type: 'broadcast',
+						event: 'test',
+						payload: { user: userResponse.data, eventType: payload.eventType }
+					});
+				} catch (e) {
+					console.error(e);
+				}
+			}
+		)
+		.subscribe();
 
 	return {
 		game: game.data.toJSON(),

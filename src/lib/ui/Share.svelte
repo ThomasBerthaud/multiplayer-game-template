@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { clipboard, getToastStore } from '@skeletonlabs/skeleton';
+	import { browser } from '$app/environment';
 
 	export let slug: string;
 	export let userName: string;
 
 	const toastStore = getToastStore();
 
-	const shareable = navigator.canShare?.();
+	const shareable = browser ? navigator.canShare?.() : false;
 
 	function shareSlug() {
 		navigator.share({
