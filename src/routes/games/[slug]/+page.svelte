@@ -3,28 +3,64 @@
 	import { enhance } from '$app/forms';
 	import type { PageData, ActionData } from './$types';
 	import Share from '$lib/ui/Share.svelte';
-	import type { UserEntity } from '$lib/domain/Users/UserEntity';
+	import { UserEntity } from '$lib/domain/Users/UserEntity';
 	import type { DTO } from '$lib/domain/DTO';
 	import { onDestroy, onMount } from 'svelte';
 	import type { RealtimeChannel } from '@supabase/supabase-js';
+	import type { RealtimePostgresChangesPayload } from '@supabase/realtime-js/src/RealtimeChannel';
 
 	export let data: PageData;
 	export let form: ActionData;
 
+	const { supabase } = data;
+
 	let partyChannel: RealtimeChannel;
+	let { players } = data;
 
 	onMount(() => {
-		// Join a room/topic. Can be anything except for 'realtime'.
-		partyChannel = data.supabase.channel('room-1');
-
 		// Simple function to log any messages we receive
-		function messageReceived(payload) {
-			console.log(payload);
+		async function onPartyChange(
+			payload: RealtimePostgresChangesPayload<{ game_id: number; user_id: number }>
+		) {
+			try {
+				console.log(payload);
+				if (payload.eventType === 'INSERT') {
+					const newPlayer = await supabase
+						.from('users')
+						.select('*')
+						.eq('id', payload.new.user_id)
+						.single();
+					const dto = UserEntity.buildOne(newPlayer);
+					if (dto.error) {
+						console.error(dto.error);
+					} else {
+						if (dto.data.userId === data.user.id) {
+							return;
+						}
+						players = [...players, dto.data];
+						console.log(players);
+					}
+				} else if (payload.eventType === 'DELETE') {
+					players = players.filter((p) => p.id !== payload.old.user_id);
+				}
+			} catch (e) {
+				console.error(e);
+			}
 		}
 
-		// Subscribe to the Channel
-		partyChannel
-			.on('broadcast', { event: 'test' }, (payload) => messageReceived(payload))
+		// Join a room/topic. Can be anything except for 'realtime'.
+		partyChannel = supabase
+			.channel('party-users')
+			.on(
+				'postgres_changes',
+				{
+					schema: 'public',
+					table: 'games_users',
+					filter: `game_id=eq.${data.game.id}`,
+					event: '*'
+				},
+				onPartyChange
+			)
 			.subscribe();
 	});
 
@@ -36,10 +72,9 @@
 		return player.userId === data.user.id;
 	}
 
-	const you = data.players.find((player) => isYou(player));
+	const you = players.find((player) => isYou(player));
 	const isOwner = you?.userId === data.game.ownerId;
-	const isInParty =
-		data.game.status === 'pending' && data.players.some((p) => p.userId === you?.userId);
+	const isInParty = data.game.status === 'pending' && players.some((p) => p.userId === you?.userId);
 </script>
 
 <div class="card">
@@ -48,12 +83,12 @@
 		<Share slug={$page.params.slug} userName={data.user.user_metadata.user_name} />
 	</header>
 	<section class="p-4">
-		<h3>Joueurs dans la partie ({data.players.length}/{data.game.totalPlayers})</h3>
+		<h3>Joueurs dans la partie ({players.length}/{data.game.totalPlayers})</h3>
 		{#if form?.partyIsFull}
 			<div>Impossible de rejoindre la partie. Plus de place</div>
 		{/if}
 		<ul>
-			{#each data.players as player}
+			{#each players as player}
 				<li>
 					{player.userName}
 					<!--TODO fix DTO on client side-->

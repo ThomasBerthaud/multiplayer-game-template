@@ -14,7 +14,10 @@
 		"test:unit:watch": "vitest",
 		"format": "prettier --write --plugin prettier-plugin-svelte .",
 		"db-types": "supabase gen types typescript --linked > src/lib/application/database.types.ts",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"supabase:start": "supabase start",
+		"supabase:stop": "supabase stop",
+		"supabase:reset": "supabase db reset"
 	},
 	"lint-staged": {
 		"*.{js,ts,svelte}": "eslint --cache --fix",
