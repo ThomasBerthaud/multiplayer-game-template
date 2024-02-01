@@ -1,11 +1,11 @@
 import type { Result } from '$lib/application/Result';
-import type { GamesRepositoryInterface } from './GamesRepository';
+import { GamesRepository } from './GamesRepository';
 import type { NewGameDTO } from './NewGameDTO';
 import { GameEntity } from './GameEntity';
 import type { NumberLike } from '$lib/application/Hashid';
 
 export class GamesService {
-	constructor(private repository: GamesRepositoryInterface) {}
+	constructor(private repository: GamesRepository) {}
 
 	async getGame(gameId: NumberLike) {
 		const result = await this.repository.getGame(gameId);
