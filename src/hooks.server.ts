@@ -1,4 +1,5 @@
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { SERVICE_ROLE_KEY } from '$env/static/private';
 import { AuthRepository } from '$lib/domain/Auth/AuthRepository';
 import { AuthService } from '$lib/domain/Auth/AuthService';
 import type { Database } from '$lib/application/database.types';
@@ -15,6 +16,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 		supabaseKey: PUBLIC_SUPABASE_ANON_KEY,
 		event
 	});
+	event.locals.supabaseAdmin = createSupabaseServerClient<Database>({
+		supabaseUrl: PUBLIC_SUPABASE_URL,
+		supabaseKey: SERVICE_ROLE_KEY,
+		event
+	});
 
 	/**
 	 * A convenience helper so we can just call await getSession() instead const { data: { session } } = await supabase.auth.getSession()
@@ -27,7 +33,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	};
 
 	// Define all repositories
-	const authRepository = new AuthRepository(event.locals.supabase);
+	const authRepository = new AuthRepository(event.locals.supabaseAdmin);
 	const gamesRepository = new GamesRepository(event.locals.supabase);
 	const userRepository = new UserRepository(event.locals.supabase, authRepository);
 

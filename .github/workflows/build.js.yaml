@@ -10,6 +10,7 @@ env:
   PUBLIC_SUPABASE_ANON_KEY: ${{ vars.PUBLIC_SUPABASE_ANON_KEY }}
   DEFAULT_USER_PASSWORD: ${{ secrets.DEFAULT_USER_PASSWORD }}
   HASH_SALT: ${{ secrets.HASH_SALT }}
+  SERVICE_ROLE_KEY: ${{ secrets.SERVICE_ROLE_KEY }}
 
 jobs:
   checks:
