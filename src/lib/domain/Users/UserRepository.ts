@@ -1,6 +1,6 @@
 import { Err, mapToResult, type Result } from '$lib/application/Result';
 import type { User } from './User';
-import type { AuthRepositoryInterface } from '$lib/domain/Auth/AuthRepository';
+import { AuthRepository } from '$lib/domain/Auth/AuthRepository';
 import type { AppSupabaseClient } from '$lib/application/AppSupabaseClient';
 import type { NumberLike } from '$lib/application/Hashid';
 import type { AuthError, PostgrestError } from '@supabase/supabase-js';
@@ -15,7 +15,7 @@ export interface UserRepositoryInterface {
 export class UserRepository implements UserRepositoryInterface {
 	constructor(
 		private supabase: AppSupabaseClient,
-		private authRepository: AuthRepositoryInterface
+		private authRepository: AuthRepository
 	) {}
 
 	async addToGame(gameId: number): Promise<Result<null, AuthError | PostgrestError>> {

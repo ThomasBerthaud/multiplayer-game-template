@@ -4,35 +4,37 @@ import type { Result } from '$lib/application/Result';
 import { Err, Ok } from '$lib/application/Result';
 import type { AppSupabaseClient } from '$lib/application/AppSupabaseClient';
 import type { User } from '$lib/domain/Users/User';
+import type { SignInWithPasswordCredentials } from '@supabase/gotrue-js/src/lib/types';
 
-export interface AuthRepositoryInterface {
-	logIn(userId: string, userName: string): Promise<AuthResponse>;
-	signUp(userId: string, userName: string): Promise<AuthResponse>;
-
-	getCurrentUser(): Promise<Result<User, AuthError | PostgrestError>>;
-}
-
-export class AuthRepository implements AuthRepositoryInterface {
+export class AuthRepository {
 	constructor(private supabase: AppSupabaseClient) {}
 
-	logIn(userId: string, userName: string): Promise<AuthResponse> {
-		// TODO update userName
-		return this.supabase.auth.signInWithPassword({
-			email: `${userId}@yopmail.com`,
-			password: DEFAULT_USER_PASSWORD
-		});
-	}
-
-	signUp(userId: string, userName: string): Promise<AuthResponse> {
-		return this.supabase.auth.signUp({
-			email: `${userId}@yopmail.com`,
-			password: DEFAULT_USER_PASSWORD,
-			options: {
-				data: {
-					user_name: userName
-				}
+	async signUp(userId: string, userName: string): Promise<AuthResponse> {
+		const credentials = this.getCredentials(userId);
+		await this.supabase.auth.admin.createUser({
+			...credentials,
+			email_confirm: true,
+			user_metadata: {
+				user_name: userName
 			}
 		});
+
+		return await this.supabase.auth.signInWithPassword(credentials);
+	}
+
+	async logIn(userId: string, userName: string): Promise<AuthResponse> {
+		const credentials = this.getCredentials(userId);
+		const response = await this.supabase.auth.signInWithPassword(credentials);
+		if (response.error) {
+			return response;
+		}
+		const uid = response.data.user.id;
+		await this.supabase.auth.admin.updateUserById(uid, {
+			user_metadata: {
+				user_name: userName
+			}
+		});
+		return response;
 	}
 
 	async getCurrentUser(): Promise<Result<User, AuthError | PostgrestError>> {
@@ -50,5 +52,12 @@ export class AuthRepository implements AuthRepositoryInterface {
 		}
 
 		return Ok(user.data);
+	}
+
+	private getCredentials(userId: string): SignInWithPasswordCredentials {
+		return {
+			email: `${userId}@tberthaud.com`,
+			password: DEFAULT_USER_PASSWORD
+		};
 	}
 }
