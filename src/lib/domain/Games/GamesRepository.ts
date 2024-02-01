@@ -4,12 +4,7 @@ import { mapToResult, type Result } from '$lib/application/Result';
 import type { NumberLike } from '$lib/application/Hashid';
 import type { AppSupabaseClient } from '$lib/application/AppSupabaseClient';
 
-export interface GamesRepositoryInterface {
-	getGame(gameId: NumberLike): Promise<Result<Game>>;
-	createGame(newGame: NewGameDTO): Promise<Result<Game>>;
-}
-
-export class GamesRepository implements GamesRepositoryInterface {
+export class GamesRepository {
 	constructor(private supabase: AppSupabaseClient) {}
 
 	async getGame(gameId: NumberLike): Promise<Result<Game>> {
