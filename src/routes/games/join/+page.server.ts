@@ -27,7 +27,7 @@ export const actions: Actions = {
 			console.error(userResponse.error);
 			// User is not logged in
 			if (userResponse.error instanceof AuthError) {
-				throw redirect(300, '/');
+				redirect(300, '/');
 			}
 			// No more room in the game
 			if (userResponse.error instanceof MaxPlayersError) {
@@ -41,10 +41,10 @@ export const actions: Actions = {
 			if (userResponse.error.code === '23505') {
 				// ignore
 			} else {
-				throw error(500, 'could not join game');
+				error(500, 'could not join game');
 			}
 		}
 
-		throw redirect(303, `/games/${gameResponse.data.gameCode}`);
+		redirect(303, `/games/${gameResponse.data.gameCode}`);
 	}
 };

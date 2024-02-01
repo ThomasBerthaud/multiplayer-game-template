@@ -9,12 +9,12 @@ export const load: PageServerLoad = async ({ params, locals: { gamesService, use
 	const game = await gamesService.getGame(gameId);
 	if (game.error) {
 		console.error(game.error);
-		throw error(404, 'game not found');
+		error(404, 'game not found');
 	}
 	const players = await userService.getPlayers(game.data.id);
 	if (players.error) {
 		console.error(game.error);
-		throw error(404, 'game not found');
+		error(404, 'game not found');
 	}
 
 	return {
@@ -46,12 +46,12 @@ export const actions: Actions = {
 			if (userResponse.error instanceof GameAlreadyStartedError) {
 				return fail(403, { gameAlreadyStarted: true });
 			}
-			throw error(404, "couldn't join game");
+			error(404, "couldn't join game");
 		}
 	},
 	leave: async ({ params, locals: { userService } }) => {
 		const gameId = GameEntity.getGameId(params.slug);
 		await userService.leaveGame(gameId);
-		throw redirect(303, '/');
+		redirect(303, '/');
 	}
 };

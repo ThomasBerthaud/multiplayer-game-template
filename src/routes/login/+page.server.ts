@@ -19,7 +19,7 @@ export const actions: Actions = {
 			return fail(400, { unknownError: true });
 		}
 
-		cookies.set('uuid', response.data.userId);
-		throw redirect(303, '/');
+		cookies.set('uuid', response.data.userId, { path: '/' });
+		redirect(303, '/');
 	}
 };
