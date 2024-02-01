@@ -5,7 +5,7 @@ export const actions: Actions = {
 	create: async ({ request, locals: { gamesService, userService, getSession } }) => {
 		const session = await getSession();
 		if (!session) {
-			throw error(401, 'not logged in');
+			error(401, 'not logged in');
 		}
 
 		const data = await request.formData();
@@ -34,6 +34,6 @@ export const actions: Actions = {
 			return fail(500, { success: false });
 		}
 
-		throw redirect(303, `./${gameResult.data.gameCode}`);
+		redirect(303, `./${gameResult.data.gameCode}`);
 	}
 };
