@@ -2,7 +2,7 @@ import type { Result } from '$lib/application/Result';
 import { Err } from '$lib/application/Result';
 import { UserEntity } from './UserEntity';
 import type { NumberLike } from '$lib/application/Hashid';
-import type { AuthError, PostgrestError } from '@supabase/supabase-js';
+import type { AuthError, PostgrestError, Session } from '@supabase/supabase-js';
 import { GamesRepository } from '$lib/domain/Games/GamesRepository';
 import { UserRepository } from '$lib/domain/Users/UserRepository';
 import { GameAlreadyStartedError } from '$lib/domain/Users/errors/GameAlreadyStartedError';
@@ -14,6 +14,11 @@ export class UserService {
 		private repository: UserRepository,
 		private gameRepository: GamesRepository
 	) {}
+
+	async getYou(session: Session) {
+		const response = await this.repository.getYou(session);
+		return UserEntity.buildOne(response);
+	}
 
 	async addToGame(gameId: number): Promise<Result<null, AddGameError>> {
 		const game = await this.gameRepository.getGame(gameId);

@@ -1,86 +1,52 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
-	import type { PageData, ActionData } from './$types';
+	import type { ActionData, PageData } from './$types';
 	import Share from '$lib/ui/Share.svelte';
 	import { UserEntity } from '$lib/domain/Users/UserEntity';
 	import type { DTO } from '$lib/domain/DTO';
 	import { onDestroy, onMount } from 'svelte';
 	import type { RealtimeChannel } from '@supabase/supabase-js';
-	import type { RealtimePostgresChangesPayload } from '@supabase/realtime-js/src/RealtimeChannel';
 
 	export let data: PageData;
 	export let form: ActionData;
 
-	const { supabase } = data;
+	const { supabase, you, game } = data;
 
-	let partyChannel: RealtimeChannel;
 	let { players } = data;
+	let roomOne: RealtimeChannel;
 
 	onMount(() => {
-		// Simple function to log any messages we receive
-		async function onPartyChange(
-			payload: RealtimePostgresChangesPayload<{ game_id: number; user_id: number }>
-		) {
-			try {
-				console.log(payload);
-				if (payload.eventType === 'INSERT') {
-					const newPlayer = await supabase
-						.from('users')
-						.select('*')
-						.eq('id', payload.new.user_id)
-						.single();
-					const dto = UserEntity.buildOne(newPlayer);
-					if (dto.error) {
-						console.error(dto.error);
-					} else {
-						if (dto.data.userId === data.user.id) {
-							return;
-						}
-						players = [...players, dto.data];
-						console.log(players);
-					}
-				} else if (payload.eventType === 'DELETE') {
-					players = players.filter((p) => p.id !== payload.old.user_id);
-				}
-			} catch (e) {
-				console.error(e);
-			}
-		}
+		roomOne = supabase.channel('room_01');
 
-		// Join a room/topic. Can be anything except for 'realtime'.
-		partyChannel = supabase
-			.channel('party-users')
-			.on(
-				'postgres_changes',
-				{
-					schema: 'public',
-					table: 'games_users',
-					filter: `game_id=eq.${data.game.id}`,
-					event: '*'
-				},
-				onPartyChange
-			)
-			.subscribe();
+		roomOne
+			.on('presence', { event: 'sync' }, () => {
+				const newState = roomOne.presenceState<DTO<UserEntity>>();
+				players = Object.values(newState).map((p) => p[0]);
+			})
+			.subscribe(async (status) => {
+				if (status !== 'SUBSCRIBED') return;
+				roomOne.track(you);
+			});
 	});
 
 	onDestroy(() => {
-		partyChannel?.unsubscribe();
+		roomOne.untrack();
+		roomOne.unsubscribe();
 	});
 
 	function isYou(player: DTO<UserEntity>): boolean {
-		return player.userId === data.user.id;
+		return player.userId === you.userId;
 	}
 
-	const you = players.find((player) => isYou(player));
-	const isOwner = you?.userId === data.game.ownerId;
-	const isInParty = data.game.status === 'pending' && players.some((p) => p.userId === you?.userId);
+	const isOwner = you?.userId === game.ownerId;
+	const isInParty = game.status === 'pending' && players.some((p) => p.userId === you?.userId);
 </script>
 
 <div class="card">
 	<header class="card-header flex items-center justify-between gap-5">
 		<h1 class="h1">Partie n° {$page.params.slug}</h1>
-		<Share slug={$page.params.slug} userName={data.user.user_metadata.user_name} />
+		<Share slug={$page.params.slug} userName={you.userName} />
 	</header>
 	<section class="p-4">
 		<h3>Joueurs dans la partie ({players.length}/{data.game.totalPlayers})</h3>

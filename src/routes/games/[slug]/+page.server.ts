@@ -4,7 +4,15 @@ import { GameEntity } from '$lib/domain/Games/GameEntity';
 import { MaxPlayersError } from '$lib/domain/Users/errors/MaxPlayersError';
 import { GameAlreadyStartedError } from '$lib/domain/Users/errors/GameAlreadyStartedError';
 
-export const load: PageServerLoad = async ({ params, locals: { gamesService, userService } }) => {
+export const load: PageServerLoad = async ({
+	params,
+	locals: { gamesService, userService, getSession }
+}) => {
+	const session = await getSession();
+	if (!session) {
+		redirect(302, '/login');
+	}
+
 	const gameId = GameEntity.getGameId(params.slug);
 	const game = await gamesService.getGame(gameId);
 	if (game.error) {
@@ -16,8 +24,14 @@ export const load: PageServerLoad = async ({ params, locals: { gamesService, use
 		console.error(game.error);
 		error(404, 'game not found');
 	}
+	const you = await userService.getYou(session);
+	if (you.error) {
+		console.error(you.error);
+		error(404, 'user not found');
+	}
 
 	return {
+		you: you.data.toJSON(),
 		game: game.data.toJSON(),
 		players: players.data.map((e) => e.toJSON())
 	};

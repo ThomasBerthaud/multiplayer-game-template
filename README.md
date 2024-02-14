@@ -40,19 +40,32 @@ see .env.example for a list of all the environment variables.
 
 ## Database Installation
 
-### Populating the Database
+This project uses `Docker` to run a local instance of the database. To start the database, you need to have Docker installed and running.
+You also need to have the `supabase` CLI installed.
 
-Execute the data population script located in the [scripts](./scripts/) folder (TODO).
+Then, you can use the following commands:
 
-### Obtaining TypeScript Typing for the Database
+### Start Docker
 
 ```bash
-npm run db-types
+npm run supabase:start
+```
+
+### Stop Docker
+
+```bash
+npm run supabase:stop
+```
+
+## Reset database
+
+```bash
+npm run supabase:reset
 ```
 
 ## Automated Testing
 
-The project is covered by unit tests:
+To run the unit tests:
 
 ```bash
 npm run test:unit
