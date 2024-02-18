@@ -13,7 +13,7 @@ alter table games enable row level security;
 
 create policy "Anyone can create a game"
   on games for insert
-  to authenticated
+  to anon
   with check (true);
 
 create policy "Games can only be updated by their hosts"
@@ -22,7 +22,7 @@ create policy "Games can only be updated by their hosts"
 
 create policy "User can see all games"
   on games for select
-  to authenticated
+  to anon
   using (true);
 
 create policy "User can delete his own game"

@@ -1,6 +1,6 @@
 # Multiplayer Game Template
 
-This project is a template for creating an online multiplayer game. It is based on [SvelteKit](https://kit.svelte.dev/) and [Supabase](https://supabase.io/).
+This project is a template for creating an online multiplayer game. It is based on [Remix](https://remix.run) and [Supabase](https://supabase.io/).
 
 ## Project Installation
 
@@ -40,32 +40,25 @@ see .env.example for a list of all the environment variables.
 
 ## Database Installation
 
-### Populating the Database
+This project uses `Docker` to run a local instance of the database. To start the database, you need to have Docker installed and running.
+You also need to have the `supabase` CLI installed.
 
-Execute the data population script located in the [scripts](./scripts/) folder (TODO).
+Then, you can use the following commands:
 
-### Obtaining TypeScript Typing for the Database
+### Start Docker
 
 ```bash
-npm run db-types
+npm run supabase:start
 ```
 
-## Automated Testing
-
-The project is covered by unit tests:
+### Stop Docker
 
 ```bash
-npm run test:unit
+npm run supabase:stop
 ```
 
-as well as integration tests:
+### Reset database
 
 ```bash
-npm run test
-```
-
-It's also possible to run svelte-check to check for type errors:
-
-```bash
-npm run check
+npm run supabase:reset
 ```
