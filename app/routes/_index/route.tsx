@@ -1,5 +1,29 @@
 import { Link, useNavigation } from '@remix-run/react';
 import { AbsoluteCenter, Box, Button, Card, Divider, Heading, VStack } from '@chakra-ui/react';
+import { parseForm } from 'react-zorm';
+import { GameJoinFormSchema } from '~/domain/Games/schemas/GameJoinForm.schema';
+import { ActionFunctionArgs, json, redirect } from '@remix-run/node';
+import { authenticateUser } from '~/domain/Auth/service.server';
+import { addToGame, tryLeaveGame } from '~/domain/Users/service.server';
+import { getGameId } from '~/domain/Games/gameId';
+import { getApiErrorMessage } from '~/application/ApiError';
+import JoinGameForm from '~/routes/_index/JoinGameForm';
+
+export async function action({ request }: ActionFunctionArgs) {
+    try {
+        const form = parseForm(GameJoinFormSchema, await request.formData());
+
+        await authenticateUser(request);
+
+        await addToGame(request, getGameId(form.gameCode));
+
+        return redirect(`/games/${form.gameCode}`, { headers: request.headers });
+    } catch (error) {
+        console.error(error);
+        await tryLeaveGame(request);
+        return json({ error: getApiErrorMessage(error) }, { status: 400 });
+    }
+}
 
 export default function Index() {
     const navigation = useNavigation();
@@ -23,11 +47,7 @@ export default function Index() {
                             OU
                         </AbsoluteCenter>
                     </Box>
-                    <Link to="/games/join">
-                        <Button colorScheme="purple" fontSize="lg" isLoading={isLoading}>
-                            Rejoindre une partie
-                        </Button>
-                    </Link>
+                    <JoinGameForm />
                 </VStack>
             </Card>
         </VStack>

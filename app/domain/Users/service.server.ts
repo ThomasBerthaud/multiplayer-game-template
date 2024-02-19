@@ -18,7 +18,7 @@ export async function addToGame(request: Request, gameId: NumberLike) {
     if (players.length >= game.total_players) {
         throw new MaxPlayersError();
     }
-    const response = await supabase.from('games_users').insert({ game_id: gameId, user_id: user.id });
+    const response = await supabase.from('games_users').insert({ game_id: Number(gameId), user_id: user.id });
 
     return handleResult(response);
 }

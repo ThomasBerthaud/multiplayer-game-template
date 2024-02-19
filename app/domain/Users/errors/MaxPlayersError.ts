@@ -1,7 +1,7 @@
-export class MaxPlayersError extends Error {
-	constructor() {
-		super();
-		this.name = 'MaxPlayersError';
-		this.message = 'Max players reached';
-	}
+import { ApiError } from '~/application/ApiError';
+
+export class MaxPlayersError extends ApiError {
+    constructor() {
+        super('Max players reached', 400);
+    }
 }
