@@ -1,4 +1,4 @@
-import { BellAlertIcon } from '@heroicons/react/24/solid';
+import { AlertIcon } from '@chakra-ui/alert';
 
 type Props = {
     title: string;
@@ -8,7 +8,7 @@ type Props = {
 export default function Alert({ title, message = '' }: Props) {
     return (
         <aside className="alert variant-filled-error">
-            <BellAlertIcon />
+            <AlertIcon />
             <div className="alert-message">
                 <h3>{title}</h3>
                 <p>{message}</p>
