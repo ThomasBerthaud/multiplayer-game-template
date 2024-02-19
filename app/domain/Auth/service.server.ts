@@ -21,7 +21,7 @@ export async function authenticateUser(request: Request) {
     }
 
     const userId = uuid();
-    const userName = 'Guest' + Math.random().toString(36).substring(4);
+    const userName = 'Guest-' + Math.random().toString(36).substring(4, 8);
     const adminSupabase = getAdminSupabase();
     const credentials = getCredentials(userId);
     const createResponse = await adminSupabase.auth.admin.createUser({
