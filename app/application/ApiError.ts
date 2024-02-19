@@ -8,6 +8,17 @@ export class ApiError extends Error {
     }
 }
 
+export function isApiError(error: unknown): error is ApiError {
+    return error instanceof ApiError;
+}
+
+export function getApiErrorMessage(error: unknown): string {
+    if (isApiError(error)) {
+        return error.message;
+    }
+    return 'An unknown error occurred';
+}
+
 export function parseErrorStatus(error: unknown): number {
     if (isRouteErrorResponse(error)) {
         return error.status;

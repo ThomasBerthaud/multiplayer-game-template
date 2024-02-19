@@ -7,11 +7,11 @@ import type { Database } from '~/application/database.types';
 
 export type AppSupabaseClient = SupabaseClient<Database>;
 
-export function getServerSupabase(request: Request) {
+export function getServerSupabase(request: Request): AppSupabaseClient {
     const headers = request.headers;
     const cookies = parse(headers.get('Cookie') ?? headers.get('Set-Cookie') ?? '');
 
-    return createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
+    return createServerClient<Database>(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
         cookies: {
             get(key) {
                 return cookies[key];
