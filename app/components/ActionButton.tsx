@@ -1,16 +1,19 @@
-import { Form } from '@remix-run/react';
+import { Form, useFetcher } from '@remix-run/react';
+import { Button } from '@chakra-ui/react';
 
 type Props = {
     action: string;
     label: string;
+    noNavigation?: boolean;
 };
 
-export default function ActionButton({ action, label }: Props) {
+export default function ActionButton({ action, label, noNavigation }: Props) {
+    const fetcher = useFetcher();
+    const FormComponent = noNavigation ? fetcher.Form : Form;
+
     return (
-        <Form method="POST" action={action}>
-            <button type="submit" className="btn variant-filled-primary">
-                {label}
-            </button>
-        </Form>
+        <FormComponent method="POST" action={action}>
+            <Button type="submit">{label}</Button>
+        </FormComponent>
     );
 }

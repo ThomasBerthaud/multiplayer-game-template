@@ -31,13 +31,13 @@ export async function getPlayers(request: Request, gameId: NumberLike) {
     return handleResult(response);
 }
 
-export async function leaveGame(request: Request) {
-    const response = await tryLeaveGame(request);
+export async function leaveGame(request: Request, gameId: NumberLike) {
+    const response = await tryLeaveGame(request, gameId);
     return handleResult(response);
 }
 
-export async function tryLeaveGame(request: Request) {
+export async function tryLeaveGame(request: Request, gameId: NumberLike) {
     const supabase = getServerSupabase(request);
     const you = await getCurrentUser(request);
-    return supabase.from('users').select('*').eq('id', you.id);
+    return supabase.from('games_users').delete().match({ game_id: gameId, user_id: you.id });
 }
