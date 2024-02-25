@@ -5,6 +5,8 @@ declare global {
         env: {
             PUBLIC_SUPABASE_URL: string;
             PUBLIC_SUPABASE_ANON_KEY: string;
+            PUBLIC_MAX_PLAYERS: string;
+            PUBLIC_MIN_PLAYERS: string;
         };
     }
 }
@@ -19,6 +21,8 @@ declare global {
             HASH_SALT: string;
             DEFAULT_USER_PASSWORD: string;
             DOMAIN_NAME: string;
+            PUBLIC_MAX_PLAYERS: string;
+            PUBLIC_MIN_PLAYERS: string;
         }
     }
 }
@@ -56,3 +60,5 @@ export const PUBLIC_SUPABASE_URL = getEnv('PUBLIC_SUPABASE_URL', { isSecret: fal
 export const PUBLIC_SUPABASE_ANON_KEY = getEnv('PUBLIC_SUPABASE_ANON_KEY', {
     isSecret: false,
 });
+export const PUBLIC_MAX_PLAYERS = getEnv('PUBLIC_MAX_PLAYERS', { isSecret: false, isRequired: false });
+export const PUBLIC_MIN_PLAYERS = getEnv('PUBLIC_MIN_PLAYERS', { isSecret: false, isRequired: false });

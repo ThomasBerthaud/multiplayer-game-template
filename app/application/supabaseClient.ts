@@ -1,9 +1,9 @@
 import { createBrowserClient, createServerClient, isBrowser, parse, serialize } from '@supabase/ssr';
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE } from '~/utils/env';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { useLoaderData } from '@remix-run/react';
 import { LoaderFunctionArgs, TypedResponse } from '@remix-run/node';
 import type { Database } from '~/application/database.types';
+import { useLoaderData } from '@remix-run/react';
 
 export type AppSupabaseClient = SupabaseClient<Database>;
 

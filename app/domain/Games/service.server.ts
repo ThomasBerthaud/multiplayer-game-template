@@ -1,4 +1,3 @@
-import { NewGameForm } from '~/domain/Games/schemas/NewGameForm.schema';
 import { getServerSupabase } from '~/application/supabaseClient';
 import { Game } from '~/domain/Games/Game.types';
 import { handleResult } from '~/utils/handleResult';
@@ -16,14 +15,8 @@ export async function getGameLobby(request: Request, gameId: NumberLike) {
     return handleResult(gameResponse);
 }
 
-export async function createGame(request: Request, newGame: NewGameForm) {
+export async function createGame(request: Request) {
     const supabase = getServerSupabase(request);
-
-    const response = await supabase
-        .from('games')
-        .insert({ party_name: newGame.partyName, total_players: newGame.nbPlayers })
-        .select()
-        .single();
-
+    const response = await supabase.from('games').insert({}).select().single();
     return handleResult(response);
 }
