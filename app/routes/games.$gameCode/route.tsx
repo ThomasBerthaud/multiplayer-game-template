@@ -1,5 +1,5 @@
 import Share from '~/components/Share';
-import { useLoaderData, useParams } from '@remix-run/react';
+import { useBlocker, useFetcher, useLoaderData, useParams } from '@remix-run/react';
 import { json, LoaderFunctionArgs } from '@remix-run/node';
 import invariant from 'tiny-invariant';
 import { getGameLobby } from '~/domain/Games/service.server';
@@ -10,6 +10,7 @@ import { getCurrentUser } from '~/domain/Auth/service.server';
 import ActionButton from '~/components/ActionButton';
 import { MAX_PLAYERS } from '~/domain/Games/Game.constants';
 import { hasEnoughPlayers } from '~/domain/Games/Game.utils';
+import { Button } from '@chakra-ui/react';
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
     invariant(params.gameCode, 'gameCode is required');
@@ -22,9 +23,18 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 export default function GameLobby() {
     const { you, game } = useLoaderData<typeof loader>();
     const params = useParams();
+    const fetcher = useFetcher();
     invariant(params.gameCode, 'gameCode is required');
-    const isOwner = you.user_id === game.owner_id;
+    useBlocker(() => {
+        fetcher.submit({ noRedirect: true }, { action: './leave', method: 'post' });
+        return false;
+    });
 
+    const onLeave = () => {
+        fetcher.submit({}, { action: './leave', method: 'post' });
+    };
+
+    const isOwner = you.user_id === game.owner_id;
     const isYou = (player: User) => player.id === you.id;
 
     return (
@@ -56,7 +66,9 @@ export default function GameLobby() {
                 ) : (
                     <p>En attente du lancement de la partie</p>
                 )}
-                <ActionButton action="./leave" label="Quitter la partie" noNavigation />
+                <Button type="button" onClick={onLeave}>
+                    Quitter la partie
+                </Button>
             </footer>
         </div>
     );
