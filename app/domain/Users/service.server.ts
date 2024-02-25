@@ -5,6 +5,7 @@ import { MaxPlayersError } from '~/domain/Users/errors/MaxPlayersError';
 import { getGame } from '~/domain/Games/service.server';
 import { getServerSupabase } from '~/application/supabaseClient';
 import { getCurrentUser } from '~/domain/Auth/service.server';
+import { MAX_PLAYERS } from '~/domain/Games/Game.constants';
 
 export async function addToGame(request: Request, gameId: NumberLike) {
     const user = await getCurrentUser(request);
@@ -15,7 +16,8 @@ export async function addToGame(request: Request, gameId: NumberLike) {
         throw new GameAlreadyStartedError();
     }
     const players = await getPlayers(request, gameId);
-    if (players.length >= game.total_players) {
+    console.log(players.length, MAX_PLAYERS);
+    if (players.length >= MAX_PLAYERS) {
         throw new MaxPlayersError();
     }
     const response = await supabase.from('games_users').insert({ game_id: Number(gameId), user_id: user.id });
