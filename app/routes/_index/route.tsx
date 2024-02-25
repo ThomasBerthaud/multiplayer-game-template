@@ -8,19 +8,23 @@ import { addToGame, tryLeaveGame } from '~/domain/Users/service.server';
 import { getGameId } from '~/domain/Games/gameId';
 import { getApiErrorMessage } from '~/application/ApiError';
 import JoinGameForm from '~/routes/_index/JoinGameForm';
+import { NumberLike } from '~/application/Hashid';
 
 export async function action({ request }: ActionFunctionArgs) {
+    let gameId: NumberLike | undefined = undefined;
     try {
         const form = parseForm(GameJoinFormSchema, await request.formData());
+        gameId = getGameId(form.gameCode);
 
         await authenticateUser(request);
-
-        await addToGame(request, getGameId(form.gameCode));
+        await addToGame(request, gameId);
 
         return redirect(`/games/${form.gameCode}`, { headers: request.headers });
     } catch (error) {
         console.error(error);
-        await tryLeaveGame(request);
+        if (gameId !== undefined) {
+            await tryLeaveGame(request, gameId);
+        }
         return json({ error: getApiErrorMessage(error) }, { status: 400 });
     }
 }
