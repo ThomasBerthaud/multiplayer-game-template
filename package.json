@@ -9,7 +9,9 @@
     "start": "remix-serve ./build/index.js",
     "format": "prettier --write .",
     "typecheck": "tsc",
-    "supabase:start": "supabase start"
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:db-types": "supabase gen types typescript --local > app/application/database.types.ts"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",

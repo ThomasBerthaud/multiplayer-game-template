@@ -1,6 +1,15 @@
 import { json, LinksFunction, MetaFunction } from '@remix-run/node';
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useRouteError } from '@remix-run/react';
-import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '~/utils/env';
+import {
+    Links,
+    LiveReload,
+    Meta,
+    Outlet,
+    Scripts,
+    ScrollRestoration,
+    useLoaderData,
+    useRouteError,
+} from '@remix-run/react';
+import { PUBLIC_MAX_PLAYERS, PUBLIC_MIN_PLAYERS, PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '~/utils/env';
 import { useClientSupabase } from '~/application/supabaseClient';
 import { Box, Center, ChakraProvider, ColorModeScript, Heading, HStack, VStack } from '@chakra-ui/react';
 import { parseErrorMessage, parseErrorStatus, parseErrorStatusText } from '~/application/ApiError';
@@ -27,6 +36,8 @@ export async function loader() {
         env: {
             PUBLIC_SUPABASE_URL,
             PUBLIC_SUPABASE_ANON_KEY,
+            PUBLIC_MAX_PLAYERS,
+            PUBLIC_MIN_PLAYERS,
         },
     });
 }
@@ -50,6 +61,7 @@ function Document({ children, title = 'App title' }: { children: React.ReactNode
 }
 
 export default function App() {
+    const { env } = useLoaderData<typeof loader>();
     const supabase = useClientSupabase<typeof loader>();
 
     return (
@@ -58,6 +70,11 @@ export default function App() {
             <ChakraProvider>
                 <Outlet context={{ supabase }} />
             </ChakraProvider>
+            <script
+                dangerouslySetInnerHTML={{
+                    __html: `window.env = ${JSON.stringify(env)}`,
+                }}
+            />
         </Document>
     );
 }

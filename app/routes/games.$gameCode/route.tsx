@@ -8,6 +8,8 @@ import { User } from '~/domain/Users/User.types';
 import { requireSession } from '~/application/session.server';
 import { getCurrentUser } from '~/domain/Auth/service.server';
 import ActionButton from '~/components/ActionButton';
+import { MAX_PLAYERS } from '~/domain/Games/Game.constants';
+import { hasEnoughPlayers } from '~/domain/Games/Game.utils';
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
     invariant(params.gameCode, 'gameCode is required');
@@ -33,7 +35,7 @@ export default function GameLobby() {
             </header>
             <section className="p-4">
                 <h3>
-                    Joueurs dans la partie ({game.users.length}/{game.total_players})
+                    Joueurs dans la partie ({game.users.length}/{MAX_PLAYERS})
                 </h3>
                 <ul>
                     {game.users.map((user: User) => (
@@ -46,7 +48,11 @@ export default function GameLobby() {
             <hr className="opacity-50 mb-4" />
             <footer className="card-footer flex gap-3">
                 {isOwner ? (
-                    <ActionButton action="./start" label="Demarrer la partie" />
+                    hasEnoughPlayers(game) ? (
+                        <ActionButton action="./start" label="Demarrer la partie" />
+                    ) : (
+                        <p>En attente de joueurs</p>
+                    )
                 ) : (
                     <p>En attente du lancement de la partie</p>
                 )}
