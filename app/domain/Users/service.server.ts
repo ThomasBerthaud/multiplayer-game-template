@@ -16,7 +16,6 @@ export async function addToGame(request: Request, gameId: NumberLike) {
         throw new GameAlreadyStartedError();
     }
     const players = await getPlayers(request, gameId);
-    console.log(players.length, MAX_PLAYERS);
     if (players.length >= MAX_PLAYERS) {
         throw new MaxPlayersError();
     }

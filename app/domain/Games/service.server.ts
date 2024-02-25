@@ -20,3 +20,14 @@ export async function createGame(request: Request) {
     const response = await supabase.from('games').insert({}).select().single();
     return handleResult(response);
 }
+
+export async function deleteGameIfEmpty(request: Request, gameId: NumberLike) {
+    const supabase = getServerSupabase(request);
+    const usersGameResponse = await supabase.from('games_users').select().eq('game_id', gameId).maybeSingle();
+    const hasUsers = handleResult(usersGameResponse) !== null;
+    if (hasUsers) {
+        return;
+    }
+    const deleteResponse = await supabase.from('games').delete().match({ id: gameId });
+    return handleResult(deleteResponse);
+}
