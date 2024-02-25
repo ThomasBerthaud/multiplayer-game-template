@@ -1,5 +1,5 @@
 import Share from '~/components/Share';
-import { Link, useLoaderData, useParams } from '@remix-run/react';
+import { useLoaderData, useParams } from '@remix-run/react';
 import { json, LoaderFunctionArgs } from '@remix-run/node';
 import invariant from 'tiny-invariant';
 import { getGameLobby } from '~/domain/Games/service.server';
@@ -50,7 +50,7 @@ export default function GameLobby() {
                 ) : (
                     <p>En attente du lancement de la partie</p>
                 )}
-                <Link to="/">Quitter la partie</Link>
+                <ActionButton action="./leave" label="Quitter la partie" noNavigation />
             </footer>
         </div>
     );
