@@ -1,7 +1,8 @@
-import { ApiError } from '~/application/ApiError';
-
-export class MaxPlayersError extends ApiError {
+export class MaxPlayersError extends Response {
     constructor() {
-        super('Max players reached', 400);
+        super(null, {
+            status: 400,
+            statusText: 'Max Players Reached',
+        });
     }
 }
