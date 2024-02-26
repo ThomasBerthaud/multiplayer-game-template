@@ -2,14 +2,12 @@ import { ActionFunctionArgs, json, redirect } from '@remix-run/node';
 import { createGame } from '~/domain/Games/service.server';
 import { getGameCode } from '~/domain/Games/gameId';
 import { authenticateUser } from '~/domain/Auth/service.server';
-import { addToGame } from '~/domain/Users/service.server';
 
 export async function action({ request }: ActionFunctionArgs) {
     try {
         await authenticateUser(request);
 
         const game = await createGame(request);
-        await addToGame(request, game.id);
 
         return redirect(`/games/${getGameCode(game.id)}`, { headers: request.headers });
     } catch (error) {

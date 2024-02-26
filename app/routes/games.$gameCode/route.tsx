@@ -2,7 +2,7 @@ import Share from '~/components/Share';
 import { useBlocker, useFetcher, useLoaderData, useParams } from '@remix-run/react';
 import { json, LoaderFunctionArgs } from '@remix-run/node';
 import invariant from 'tiny-invariant';
-import { getGameLobby } from '~/domain/Games/service.server';
+import { getGame, getGameLobby } from '~/domain/Games/service.server';
 import { getGameId } from '~/domain/Games/gameId';
 import { User } from '~/domain/Users/User.types';
 import { requireSession } from '~/application/session.server';
@@ -11,17 +11,31 @@ import ActionButton from '~/components/ActionButton';
 import { MAX_PLAYERS } from '~/domain/Games/Game.constants';
 import { hasEnoughPlayers } from '~/domain/Games/Game.utils';
 import { Button } from '@chakra-ui/react';
+import { tryAddToGame } from '~/domain/Users/service.server';
+import { GameNotFoundError } from '~/domain/Games/errors/GameNotFoundError';
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
     invariant(params.gameCode, 'gameCode is required');
     await requireSession(request);
+    const gameId = getGameId(params.gameCode);
 
-    const [you, game] = await Promise.all([getCurrentUser(request), getGameLobby(request, getGameId(params.gameCode))]);
-    return json({ you, game }, { headers: request.headers });
+    if (!gameId) {
+        throw new GameNotFoundError();
+    }
+
+    const game = await getGame(request, gameId);
+    if (!game) {
+        throw new GameNotFoundError();
+    }
+
+    await tryAddToGame(request, gameId);
+
+    const [you, gameLobby] = await Promise.all([getCurrentUser(request), getGameLobby(request, gameId)]);
+    return json({ you, gameLobby }, { headers: request.headers });
 }
 
 export default function GameLobby() {
-    const { you, game } = useLoaderData<typeof loader>();
+    const { you, gameLobby } = useLoaderData<typeof loader>();
     const params = useParams();
     const fetcher = useFetcher();
     invariant(params.gameCode, 'gameCode is required');
@@ -34,7 +48,7 @@ export default function GameLobby() {
         fetcher.submit({}, { action: './leave', method: 'post' });
     };
 
-    const isOwner = you.user_id === game.owner_id;
+    const isOwner = you.user_id === gameLobby.owner_id;
     const isYou = (player: User) => player.id === you.id;
 
     return (
@@ -45,10 +59,10 @@ export default function GameLobby() {
             </header>
             <section className="p-4">
                 <h3>
-                    Joueurs dans la partie ({game.users.length}/{MAX_PLAYERS})
+                    Joueurs dans la partie ({gameLobby.users.length}/{MAX_PLAYERS})
                 </h3>
                 <ul>
-                    {game.users.map((user: User) => (
+                    {gameLobby.users.map((user: User) => (
                         <li key={user.id}>
                             {user.user_name} {isYou(user) && <span>(You)</span>}
                         </li>
@@ -58,7 +72,7 @@ export default function GameLobby() {
             <hr className="opacity-50 mb-4" />
             <footer className="card-footer flex gap-3">
                 {isOwner ? (
-                    hasEnoughPlayers(game) ? (
+                    hasEnoughPlayers(gameLobby) ? (
                         <ActionButton action="./start" label="Demarrer la partie" />
                     ) : (
                         <p>En attente de joueurs</p>

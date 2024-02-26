@@ -1,17 +1,39 @@
 import { handleResult } from '~/utils/handleResult';
 import type { NumberLike } from '~/application/Hashid';
-import { GameAlreadyStartedError } from '~/domain/Users/errors/GameAlreadyStartedError';
+import { GameAlreadyStartedError } from '~/domain/Games/errors/GameAlreadyStartedError';
 import { MaxPlayersError } from '~/domain/Users/errors/MaxPlayersError';
 import { getGame } from '~/domain/Games/service.server';
 import { getServerSupabase } from '~/application/supabaseClient';
 import { getCurrentUser } from '~/domain/Auth/service.server';
 import { MAX_PLAYERS } from '~/domain/Games/Game.constants';
+import { GameNotFoundError } from '~/domain/Games/errors/GameNotFoundError';
+
+export async function tryAddToGame(request: Request, gameId: NumberLike) {
+    const user = await getCurrentUser(request);
+    const supabase = getServerSupabase(request);
+
+    const response = await supabase
+        .from('games_users')
+        .select()
+        .eq('game_id', gameId)
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+    if (handleResult(response) !== null) {
+        return;
+    }
+
+    return await addToGame(request, gameId);
+}
 
 export async function addToGame(request: Request, gameId: NumberLike) {
     const user = await getCurrentUser(request);
     const supabase = getServerSupabase(request);
 
     const game = await getGame(request, gameId);
+    if (!game) {
+        throw new GameNotFoundError();
+    }
     if (game.status !== 'pending') {
         throw new GameAlreadyStartedError();
     }
