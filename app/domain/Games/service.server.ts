@@ -3,9 +3,9 @@ import { Game } from '~/domain/Games/Game.types';
 import { handleResult } from '~/utils/handleResult';
 import { NumberLike } from 'hashids/util';
 
-export async function getGame(request: Request, gameId: NumberLike): Promise<Game> {
+export async function getGame(request: Request, gameId: NumberLike): Promise<Game | null> {
     const supabase = getServerSupabase(request);
-    const response = await supabase.from('games').select().match({ id: gameId }).single();
+    const response = await supabase.from('games').select().match({ id: gameId }).maybeSingle();
     return handleResult(response);
 }
 
