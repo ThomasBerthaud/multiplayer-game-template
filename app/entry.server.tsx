@@ -103,7 +103,7 @@ function handleBrowserRequest(
 ) {
     return new Promise((resolve, reject) => {
         let shellRendered = false;
-        const emotionCache = createEmotionCache({ key: 'css' });
+        const emotionCache = createEmotionCache({ key: 'cha' });
 
         const { pipe, abort } = renderToPipeableStream(
             <EmotionCacheProvider value={emotionCache}>

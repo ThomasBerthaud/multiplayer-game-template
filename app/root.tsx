@@ -1,19 +1,8 @@
-import { json, LinksFunction, MetaFunction } from '@remix-run/node';
-import {
-    Links,
-    LiveReload,
-    Meta,
-    Outlet,
-    Scripts,
-    ScrollRestoration,
-    useLoaderData,
-    useRouteError,
-} from '@remix-run/react';
+import { json, LinksFunction, LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
+import { Outlet, useLoaderData } from '@remix-run/react';
 import { PUBLIC_MAX_PLAYERS, PUBLIC_MIN_PLAYERS, PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '~/utils/env';
 import { useClientSupabase } from '~/application/supabaseClient';
-import { Box, Center, ChakraProvider, ColorModeScript, Heading, HStack, VStack } from '@chakra-ui/react';
-import { parseErrorMessage, parseErrorStatus, parseErrorStatusText } from '~/application/ApiError';
-import { WarningTwoIcon } from '@chakra-ui/icons';
+import Document from '~/components/Document';
 
 export const links: LinksFunction = () => [
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -31,7 +20,7 @@ export const meta: MetaFunction = () => [
     },
 ];
 
-export async function loader() {
+export async function loader({ request }: LoaderFunctionArgs) {
     return json({
         env: {
             PUBLIC_SUPABASE_URL,
@@ -39,67 +28,22 @@ export async function loader() {
             PUBLIC_MAX_PLAYERS,
             PUBLIC_MIN_PLAYERS,
         },
+        cookies: request.headers.get('cookie') ?? '',
     });
 }
 
-function Document({ children, title = 'App title' }: { children: React.ReactNode; title?: string }) {
-    return (
-        <html lang="en">
-            <head>
-                <Meta />
-                <title>{title}</title>
-                <Links />
-            </head>
-            <body>
-                {children}
-                <ScrollRestoration />
-                <Scripts />
-                <LiveReload />
-            </body>
-        </html>
-    );
-}
-
 export default function App() {
-    const { env } = useLoaderData<typeof loader>();
+    const { env, cookies } = useLoaderData<typeof loader>();
     const supabase = useClientSupabase<typeof loader>();
 
     return (
-        <Document>
-            <ColorModeScript />
-            <ChakraProvider>
-                <Outlet context={{ supabase }} />
-            </ChakraProvider>
+        <Document cookies={cookies}>
+            <Outlet context={{ supabase }} />
             <script
                 dangerouslySetInnerHTML={{
                     __html: `window.env = ${JSON.stringify(env)}`,
                 }}
             />
-        </Document>
-    );
-}
-
-export function ErrorBoundary() {
-    const error = useRouteError();
-
-    return (
-        <Document title="Error!">
-            <ChakraProvider>
-                <VStack spacing={8}>
-                    <Box w="100%" bg="purple.400">
-                        <Center>
-                            <HStack py={10} px={2} color="white">
-                                <WarningTwoIcon boxSize={6} />
-                                <Heading as="h1">{parseErrorStatus(error)}</Heading>
-                                <Heading as="h1"> - </Heading>
-                                <Heading as="h1">{parseErrorStatusText(error)}</Heading>
-                                <WarningTwoIcon boxSize={6} />
-                            </HStack>
-                        </Center>
-                    </Box>
-                    <Heading as="h1">{parseErrorMessage(error)}</Heading>
-                </VStack>
-            </ChakraProvider>
         </Document>
     );
 }

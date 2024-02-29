@@ -1,5 +1,5 @@
 import { Link, useFetcher, useNavigation } from '@remix-run/react';
-import { Box, Button, Center, Container, Divider, Heading, HStack, useColorModeValue, VStack } from '@chakra-ui/react';
+import { Button, Center, Container, Divider, Heading, HStack, useColorModeValue, VStack } from '@chakra-ui/react';
 import JoinGameForm from '~/routes/_index/JoinGameForm';
 import { AddIcon } from '@chakra-ui/icons';
 import ColorModeToggle from '~/components/ColorModeToggle';
@@ -17,17 +17,17 @@ export default function Index() {
 
     return (
         <VStack h="100vh">
-            <Box w="100%" p={8} bgColor={bgColor}>
-                <HStack justifyContent="space-between">
+            <Center w="100%" h="20vh" p={8} bgColor={bgColor}>
+                <HStack w="100%" justifyContent="space-between">
                     <Heading textAlign="center">The Game</Heading>
                     <ColorModeToggle />
                 </HStack>
-            </Box>
-            <Container flex="1">
+            </Center>
+            <Container maxW="md" flex="1">
                 <Center minHeight="80%">
                     <VStack w="100%">
                         <Button
-                            w="60%"
+                            w="100%"
                             size="lg"
                             type="button"
                             onClick={onCreateGame}
@@ -37,7 +37,7 @@ export default function Index() {
                             Créer une partie
                         </Button>
                         <JoinGameForm />
-                        <Divider w="60%" />
+                        <Divider />
                         <Button mt={8} size="lg" as={Link} to="/about" variant="ghost">
                             À propos
                         </Button>
