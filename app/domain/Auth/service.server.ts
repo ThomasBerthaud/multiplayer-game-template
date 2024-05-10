@@ -1,17 +1,7 @@
-import { v4 as uuid } from 'uuid';
-import type { SignInWithPasswordCredentials } from '@supabase/gotrue-js/src/lib/types';
-import { DEFAULT_USER_PASSWORD, EMAIL_DOMAIN } from '~/utils/env';
-import { getAdminSupabase, getServerSupabase } from '~/application/supabaseClient';
+import { getServerSupabase } from '~/application/supabaseClient';
 import type { User } from '~/domain/Users/User.types';
 import { getSession } from '~/application/session.server';
 import { handleAuthResult, handleResult } from '~/utils/handleResult';
-
-function getCredentials(userId: string): SignInWithPasswordCredentials {
-    return {
-        email: `${userId}${EMAIL_DOMAIN}`,
-        password: DEFAULT_USER_PASSWORD,
-    };
-}
 
 export async function authenticateUser(request: Request) {
     const session = await getSession(request);
@@ -20,24 +10,13 @@ export async function authenticateUser(request: Request) {
         return;
     }
 
-    const userId = uuid();
+    const supabase = getServerSupabase(request);
     const userName = 'Guest-' + Math.random().toString(36).substring(4, 8);
-    const adminSupabase = getAdminSupabase();
-    const credentials = getCredentials(userId);
-    const createResponse = await adminSupabase.auth.admin.createUser({
-        ...credentials,
-        email_confirm: true,
-        user_metadata: {
-            user_name: userName,
+    const response = await supabase.auth.signInAnonymously({
+        options: {
+            data: { user_name: userName },
         },
     });
-
-    if (createResponse.error) {
-        throw createResponse.error;
-    }
-
-    const supabase = getServerSupabase(request);
-    const response = await supabase.auth.signInWithPassword(credentials);
 
     if (response.error) {
         throw response.error;
