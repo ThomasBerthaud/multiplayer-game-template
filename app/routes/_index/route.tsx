@@ -3,6 +3,7 @@ import { Button, Center, Container, Divider, Heading, HStack, useColorModeValue,
 import JoinGameForm from '~/routes/_index/JoinGameForm';
 import { AddIcon } from '@chakra-ui/icons';
 import ColorModeToggle from '~/components/ColorModeToggle';
+import { GAME_NAME } from '~/domain/Games/Game.constants';
 
 export default function Index() {
     const fetcher = useFetcher();
@@ -19,13 +20,13 @@ export default function Index() {
         <VStack h="100vh">
             <Center w="100%" h="20vh" p={8} bgColor={bgColor}>
                 <HStack w="100%" justifyContent="space-between">
-                    <Heading textAlign="center">The Game</Heading>
+                    <Heading textAlign="center">{GAME_NAME}</Heading>
                     <ColorModeToggle />
                 </HStack>
             </Center>
             <Container maxW="md" flex="1">
                 <Center minHeight="80%">
-                    <VStack w="100%">
+                    <VStack w="100%" spacing={4}>
                         <Button
                             w="100%"
                             size="lg"
@@ -37,8 +38,8 @@ export default function Index() {
                             Créer une partie
                         </Button>
                         <JoinGameForm />
-                        <Divider />
-                        <Button mt={8} size="lg" as={Link} to="/about" variant="ghost">
+                        <Divider my={6} />
+                        <Button size="lg" as={Link} to="/about" variant="ghost">
                             À propos
                         </Button>
                     </VStack>

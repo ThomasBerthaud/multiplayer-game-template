@@ -8,14 +8,30 @@ import { User } from '~/domain/Users/User.types';
 import { requireSession } from '~/application/session.server';
 import { getCurrentUser } from '~/domain/Auth/service.server';
 import ActionButton from '~/components/ActionButton';
-import { MAX_PLAYERS } from '~/domain/Games/Game.constants';
+import { GAME_NAME, MAX_PLAYERS } from '~/domain/Games/Game.constants';
 import { hasEnoughPlayers } from '~/domain/Games/Game.utils';
-import { Button } from '@chakra-ui/react';
+import {
+    Box,
+    Center,
+    CircularProgress,
+    CircularProgressLabel,
+    Container,
+    Divider,
+    Heading,
+    HStack,
+    IconButton,
+    List,
+    ListItem,
+    Text,
+} from '@chakra-ui/react';
 import { tryAddToGame } from '~/domain/Users/service.server';
 import { GameNotFoundError } from '~/domain/Games/errors/GameNotFoundError';
+import Player from './Player';
+import { ArrowBackIcon } from '@chakra-ui/icons';
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
     invariant(params.gameCode, 'gameCode is required');
+    // TODO: auto login needed for the shared link to work
     await requireSession(request);
     const gameId = getGameId(params.gameCode);
 
@@ -40,50 +56,57 @@ export default function GameLobby() {
     const fetcher = useFetcher();
     invariant(params.gameCode, 'gameCode is required');
     useBlocker(() => {
-        fetcher.submit({ noRedirect: true }, { action: './leave', method: 'post' });
+        onLeave({ noRedirect: true });
         return false;
     });
 
-    const onLeave = () => {
-        fetcher.submit({}, { action: './leave', method: 'post' });
+    const onLeave = (target = {}) => {
+        fetcher.submit(target, { action: './leave', method: 'post' });
     };
 
     const isOwner = you.user_id === gameLobby.owner_id;
-    const isYou = (player: User) => player.id === you.id;
 
     return (
-        <div className="card">
-            <header className="card-header flex items-center justify-between gap-5">
-                <h1 className="h1">Partie n° {params.gameCode}</h1>
-                <Share content={params.gameCode} />
-            </header>
-            <section className="p-4">
-                <h3>
-                    Joueurs dans la partie ({gameLobby.users.length}/{MAX_PLAYERS})
-                </h3>
-                <ul>
+        <Container py={10}>
+            <HStack spacing={6}>
+                <IconButton icon={<ArrowBackIcon />} aria-label="Quitter la partie" onClick={onLeave} />
+                <Heading>{GAME_NAME}</Heading>
+            </HStack>
+            <Box pt={10}>
+                <HStack justifyContent="space-between" pb={4}>
+                    <HStack>
+                        <Heading as="h3" size="lg">
+                            Joueurs
+                        </Heading>
+                        <CircularProgress value={(gameLobby.users.length / MAX_PLAYERS) * 100} thickness="5px">
+                            <CircularProgressLabel>
+                                {gameLobby.users.length}/{MAX_PLAYERS}
+                            </CircularProgressLabel>
+                        </CircularProgress>
+                    </HStack>
+                    <Share gameCode={params.gameCode} />
+                </HStack>
+
+                <List spacing={3}>
                     {gameLobby.users.map((user: User) => (
-                        <li key={user.id}>
-                            {user.user_name} {isYou(user) && <span>(You)</span>}
-                        </li>
+                        <ListItem key={user.id}>
+                            <Player user={user} />
+                        </ListItem>
                     ))}
-                </ul>
-            </section>
-            <hr className="opacity-50 mb-4" />
-            <footer className="card-footer flex gap-3">
+                </List>
+            </Box>
+            <Divider my={8} />
+            <Center>
                 {isOwner ? (
                     hasEnoughPlayers(gameLobby) ? (
                         <ActionButton action="./start" label="Demarrer la partie" />
                     ) : (
-                        <p>En attente de joueurs</p>
+                        <Text>En attente de joueurs</Text>
                     )
                 ) : (
-                    <p>En attente du lancement de la partie</p>
+                    <Text>En attente du lancement de la partie</Text>
                 )}
-                <Button type="button" onClick={onLeave}>
-                    Quitter la partie
-                </Button>
-            </footer>
-        </div>
+            </Center>
+        </Container>
     );
 }
