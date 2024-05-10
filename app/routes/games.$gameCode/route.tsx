@@ -5,8 +5,7 @@ import invariant from 'tiny-invariant';
 import { getGame, getGameLobby } from '~/domain/Games/service.server';
 import { getGameId } from '~/domain/Games/gameId';
 import { User } from '~/domain/Users/User.types';
-import { requireSession } from '~/application/session.server';
-import { getCurrentUser } from '~/domain/Auth/service.server';
+import { authenticateUser, getCurrentUser } from '~/domain/Auth/service.server';
 import ActionButton from '~/components/ActionButton';
 import { GAME_NAME, MAX_PLAYERS } from '~/domain/Games/Game.constants';
 import { hasEnoughPlayers } from '~/domain/Games/Game.utils';
@@ -31,8 +30,7 @@ import { ArrowBackIcon } from '@chakra-ui/icons';
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
     invariant(params.gameCode, 'gameCode is required');
-    // TODO: auto login needed for the shared link to work
-    await requireSession(request);
+    await authenticateUser(request);
     const gameId = getGameId(params.gameCode);
 
     if (!gameId) {
@@ -84,7 +82,7 @@ export default function GameLobby() {
                             </CircularProgressLabel>
                         </CircularProgress>
                     </HStack>
-                    <Share gameCode={params.gameCode} />
+                    <Share />
                 </HStack>
 
                 <List spacing={3}>
