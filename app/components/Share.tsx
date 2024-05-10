@@ -1,45 +1,31 @@
-type Props = {
-    gameCode: string;
-};
+import { IconButton, useClipboard, useToast } from '@chakra-ui/react';
+import { LinkIcon } from '@chakra-ui/icons';
+import { useEffect } from 'react';
 
-export default function Share({ gameCode }: Props) {
-    console.log('gameCode', gameCode);
+export default function Share() {
+    const { onCopy, setValue } = useClipboard('');
+    const toast = useToast();
 
-    // const shareSlug = useCallback(() => {
-    //     navigator.share({
-    //         title: 'Rejoignez la partie',
-    //         url: window.location.href,
-    //     });
-    // }, []);
-    //
-    // const displayCopyToast = useCallback(() => {
-    //     // Remplacer par la logique de votre application pour afficher un toast
-    //     console.log('Code copié dans le presse papier. Partagez le à vos amis !', content);
-    // }, [content]);
+    useEffect(() => {
+        setValue(window.location.href);
+    }, []);
 
-    // TODO reimplement copy game code
-    return null;
+    const copyLinkToPasteBoard = () => {
+        onCopy();
 
-    // return (
-    //     <div className="flex items-center justify-end gap-2">
-    //         <button
-    //             className="btn-icon variant-ghost-tertiary"
-    //             onClick={displayCopyToast}
-    //             title="Copier le code de la partie"
-    //         >
-    //             Clipboard
-    //             <i className="fa-regular fa-clipboard"></i>
-    //         </button>
-    //         {canShare && (
-    //             <button
-    //                 className="btn-icon variant-ghost-tertiary"
-    //                 onClick={shareSlug}
-    //                 title="Partager le lien de la partie"
-    //             >
-    //                 share
-    //                 <i className="fa-regular fa-share-from-square"></i>
-    //             </button>
-    //         )}
-    //     </div>
-    // );
+        toast({
+            title: 'Lien copié dans le presse papier ! Partagez le à vos amis !',
+            status: 'success',
+            duration: 2000,
+            isClosable: true,
+        });
+    };
+
+    return (
+        <IconButton
+            icon={<LinkIcon />}
+            onClick={copyLinkToPasteBoard}
+            aria-label={`Copier le lien de la partie dans le presse papier`}
+        />
+    );
 }
