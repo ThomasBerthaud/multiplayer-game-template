@@ -19,7 +19,6 @@ declare global {
             PUBLIC_SUPABASE_ANON_KEY: string;
             SUPABASE_SERVICE_ROLE: string;
             HASH_SALT: string;
-            DEFAULT_USER_PASSWORD: string;
             DOMAIN_NAME: string;
             PUBLIC_MAX_PLAYERS: string;
             PUBLIC_MIN_PLAYERS: string;
@@ -50,8 +49,6 @@ function getEnv(name: string, { isRequired, isSecret }: EnvOptions = { isSecret:
  */
 export const SUPABASE_SERVICE_ROLE = getEnv('SUPABASE_SERVICE_ROLE');
 export const HASH_SALT = getEnv('HASH_SALT');
-export const DEFAULT_USER_PASSWORD = getEnv('DEFAULT_USER_PASSWORD');
-export const EMAIL_DOMAIN = getEnv('EMAIL_DOMAIN');
 
 /**
  * Shared env
