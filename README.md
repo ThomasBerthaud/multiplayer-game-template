@@ -32,9 +32,7 @@ PUBLIC_SUPABASE_ANON_KEY="ANON_KEY"
 You also need to provide a hash salt email domain and default password for anonymous login :
 
 ```dotenv
-DEFAULT_USER_PASSWORD="default_password"
 HASH_SALT="hash_salt"
-EMAIL_DOMAIN="@domain.com"
 ```
 
 see .env.example for a list of all the environment variables.
