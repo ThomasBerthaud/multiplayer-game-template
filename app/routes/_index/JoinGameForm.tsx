@@ -10,7 +10,7 @@ export default function JoinGameForm() {
     const zo = useZorm('GameJoin', GameJoinFormSchema);
 
     return (
-        <Box w="100%" mt={2} mb={8}>
+        <Box w="100%">
             <fetcher.Form ref={zo.ref} method="post" action="/games/join">
                 <FormControl isInvalid={!!zo.errors.gameCode()}>
                     <InputGroup size="lg">
