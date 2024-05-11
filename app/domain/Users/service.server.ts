@@ -7,6 +7,7 @@ import { getServerSupabase } from '~/application/supabaseClient';
 import { getCurrentUser } from '~/domain/Auth/service.server';
 import { MAX_PLAYERS } from '~/domain/Games/Game.constants';
 import { GameNotFoundError } from '~/domain/Games/errors/GameNotFoundError';
+import { UserEditForm } from '~/domain/Users/schemas/UserEditFormSchema';
 
 export async function tryAddToGame(request: Request, gameId: NumberLike) {
     const user = await getCurrentUser(request);
@@ -63,4 +64,10 @@ export async function tryLeaveGame(request: Request, gameId: NumberLike) {
     const supabase = getServerSupabase(request);
     const you = await getCurrentUser(request);
     return supabase.from('games_users').delete().match({ game_id: gameId, user_id: you.id });
+}
+
+export async function updateUser(request: Request, userId: string, form: UserEditForm) {
+    const supabase = getServerSupabase(request);
+    const response = await supabase.from('users').update(form).eq('id', userId);
+    return handleResult(response);
 }

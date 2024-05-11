@@ -1,7 +1,9 @@
-import { Badge, Card, CardBody, Heading, HStack } from '@chakra-ui/react';
+import { Badge, Card, CardBody, HStack } from '@chakra-ui/react';
 import { User } from '~/domain/Users/User.types';
 import { useLoaderData } from '@remix-run/react';
 import { loader } from '~/routes/games.$gameCode/route';
+import EditUsernameForm from './edit-username-form/EditUsernameForm';
+import UserName from '~/routes/games.$gameCode/player/username/UserName';
 
 type Props = {
     user: User;
@@ -15,9 +17,7 @@ export default function Player({ user }: Props) {
         <Card variant="outline">
             <CardBody>
                 <HStack justifyContent="space-between">
-                    <Heading as="h6" size="sm">
-                        {user.user_name}
-                    </Heading>
+                    {isYou ? <EditUsernameForm user={user} /> : <UserName userName={user.user_name} />}
                     <HStack gap={2}>
                         {isOwner && <Badge>Owner</Badge>}
                         {isYou && <Badge>You</Badge>}
