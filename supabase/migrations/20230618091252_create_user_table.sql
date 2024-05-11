@@ -17,6 +17,11 @@ create policy "only authenticator can insert users"
   to authenticator
   with check (true);
 
+create policy "only own user can update himself"
+  on users for update
+  to authenticated
+  using (auth.uid() = user_id);
+
 -- To see players joining a game in real-time.
 alter publication supabase_realtime add table public.users;
 

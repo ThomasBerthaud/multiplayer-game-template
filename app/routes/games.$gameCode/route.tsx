@@ -25,7 +25,7 @@ import {
 } from '@chakra-ui/react';
 import { tryAddToGame } from '~/domain/Users/service.server';
 import { GameNotFoundError } from '~/domain/Games/errors/GameNotFoundError';
-import Player from './Player';
+import Player from './player/Player';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
@@ -78,7 +78,7 @@ export default function GameLobby() {
                         </Heading>
                         <CircularProgress value={(gameLobby.users.length / MAX_PLAYERS) * 100} thickness="5px">
                             <CircularProgressLabel>
-                                {gameLobby.users.length}/{MAX_PLAYERS}
+                                {gameLobby.users.length} / {MAX_PLAYERS}
                             </CircularProgressLabel>
                         </CircularProgress>
                     </HStack>
