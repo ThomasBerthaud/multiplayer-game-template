@@ -9,24 +9,11 @@ import { authenticateUser, getCurrentUser } from '~/domain/Auth/service.server';
 import ActionButton from '~/components/ActionButton';
 import { GAME_NAME, MAX_PLAYERS } from '~/domain/Games/Game.constants';
 import { hasEnoughPlayers } from '~/domain/Games/Game.utils';
-import {
-    Box,
-    Center,
-    CircularProgress,
-    CircularProgressLabel,
-    Container,
-    Divider,
-    Heading,
-    HStack,
-    IconButton,
-    List,
-    ListItem,
-    Text,
-} from '@chakra-ui/react';
+import { Box, Container, Flex, Heading, IconButton, Separator, Text } from '@radix-ui/themes';
 import { tryAddToGame } from '~/domain/Users/service.server';
 import { GameNotFoundError } from '~/domain/Games/errors/GameNotFoundError';
 import Player from './player/Player';
-import { ArrowBackIcon } from '@chakra-ui/icons';
+import { ArrowLeftIcon } from '@radix-ui/react-icons';
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
     invariant(params.gameCode, 'gameCode is required');
@@ -65,36 +52,32 @@ export default function GameLobby() {
     const isOwner = you.user_id === gameLobby.owner_id;
 
     return (
-        <Container py={10}>
-            <HStack spacing={6}>
-                <IconButton icon={<ArrowBackIcon />} aria-label="Quitter la partie" onClick={onLeave} />
+        <Container py="10">
+            <Flex gap="6">
+                <IconButton aria-label="Quitter la partie" onClick={onLeave}>
+                    <ArrowLeftIcon />
+                </IconButton>
                 <Heading>{GAME_NAME}</Heading>
-            </HStack>
-            <Box pt={10}>
-                <HStack justifyContent="space-between" pb={4}>
-                    <HStack>
-                        <Heading as="h3" size="lg">
-                            Joueurs
-                        </Heading>
-                        <CircularProgress value={(gameLobby.users.length / MAX_PLAYERS) * 100} thickness="5px">
-                            <CircularProgressLabel>
-                                {gameLobby.users.length} / {MAX_PLAYERS}
-                            </CircularProgressLabel>
-                        </CircularProgress>
-                    </HStack>
+            </Flex>
+            <Box pt="10">
+                <Flex justify="between" pb="4">
+                    <Flex>
+                        <Heading as="h3">Joueurs</Heading>
+                        <Box>
+                            {gameLobby.users.length} / {MAX_PLAYERS}
+                        </Box>
+                    </Flex>
                     <Share />
-                </HStack>
+                </Flex>
 
-                <List spacing={3}>
+                <Flex gap="3" direction="column">
                     {gameLobby.users.map((user: User) => (
-                        <ListItem key={user.id}>
-                            <Player user={user} />
-                        </ListItem>
+                        <Player key={user.id} user={user} />
                     ))}
-                </List>
+                </Flex>
             </Box>
-            <Divider my={8} />
-            <Center>
+            <Separator my="8" />
+            <Box>
                 {isOwner ? (
                     hasEnoughPlayers(gameLobby) ? (
                         <ActionButton action="./start" label="Demarrer la partie" />
@@ -104,7 +87,7 @@ export default function GameLobby() {
                 ) : (
                     <Text>En attente du lancement de la partie</Text>
                 )}
-            </Center>
+            </Box>
         </Container>
     );
 }

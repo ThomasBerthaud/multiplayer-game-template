@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { FormControl, FormErrorMessage, HStack, IconButton } from '@chakra-ui/react';
-import { CheckIcon, EditIcon } from '@chakra-ui/icons';
+import { Box, Flex, IconButton, TextField } from '@radix-ui/themes';
+import { CheckIcon, Pencil2Icon } from '@radix-ui/react-icons';
 import { User } from '~/domain/Users/User.types';
 import { useFetcher } from '@remix-run/react';
-import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';
 import { useZorm } from 'react-zorm';
 import { UserEditFormSchema } from '~/domain/Users/schemas/UserEditFormSchema';
 import UserName from '~/routes/games.$gameCode/player/username/UserName';
@@ -31,44 +30,34 @@ export default function EditUsernameForm({ user }: Props) {
 
     if (!isEditing) {
         return (
-            <HStack>
+            <Flex>
                 <UserName userName={userName} />
-                <IconButton
-                    variant="link"
-                    aria-label="Edit username"
-                    icon={<EditIcon />}
-                    onClick={() => setIsEditing(true)}
-                />
-            </HStack>
+                <IconButton variant="ghost" aria-label="Edit username" onClick={() => setIsEditing(true)}>
+                    <Pencil2Icon />
+                </IconButton>
+            </Flex>
         );
     }
 
     return (
         <fetcher.Form ref={zo.ref} method="post" action={`/users/${user.id}/edit`}>
-            <FormControl isInvalid={!!zo.errors.user_name()}>
-                <HStack>
-                    <InputGroup size="sm">
-                        <Input
-                            type="text"
-                            name={zo.fields.user_name()}
-                            value={userName}
-                            onChange={(event) => setUserName(event.target.value)}
-                        />
-                        <InputRightElement>
-                            <IconButton
-                                variant="ghost"
-                                type="submit"
-                                aria-label="Save Username"
-                                icon={<CheckIcon />}
-                                size="xs"
-                            />
-                        </InputRightElement>
-                    </InputGroup>
-                </HStack>
-                {zo.errors.user_name((e) => (
-                    <FormErrorMessage>{e.message}</FormErrorMessage>
-                ))}
-            </FormControl>
+            <Flex>
+                <TextField.Root
+                    type="text"
+                    name={zo.fields.user_name()}
+                    value={userName}
+                    onChange={(event) => setUserName(event.target.value)}
+                >
+                    <TextField.Slot side="right">
+                        <IconButton variant="ghost" type="submit" aria-label="Save Username">
+                            <CheckIcon />
+                        </IconButton>
+                    </TextField.Slot>
+                </TextField.Root>
+            </Flex>
+            {zo.errors.user_name((e) => (
+                <Box>{e.message}</Box>
+            ))}
         </fetcher.Form>
     );
 }

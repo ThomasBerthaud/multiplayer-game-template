@@ -1,9 +1,8 @@
 import { Link, useFetcher, useNavigation } from '@remix-run/react';
-import { Button, Center, Container, Divider, Heading, HStack, useColorModeValue, VStack } from '@chakra-ui/react';
+import { Box, Button, Container, Flex, Heading, Separator } from '@radix-ui/themes';
 import JoinGameForm from '~/routes/_index/JoinGameForm';
-import { AddIcon } from '@chakra-ui/icons';
-import ColorModeToggle from '~/components/ColorModeToggle';
 import { GAME_NAME } from '~/domain/Games/Game.constants';
+import { PlusIcon } from '@radix-ui/react-icons';
 
 export default function Index() {
     const fetcher = useFetcher();
@@ -14,37 +13,27 @@ export default function Index() {
         fetcher.submit({}, { action: '/games/create', method: 'post' });
     };
 
-    const bgColor = useColorModeValue('gray.200', 'gray.700');
-
     return (
-        <VStack h="100vh">
-            <Center w="100%" h="20vh" p={8} bgColor={bgColor}>
-                <HStack w="100%" justifyContent="space-between">
-                    <Heading textAlign="center">{GAME_NAME}</Heading>
-                    <ColorModeToggle />
-                </HStack>
-            </Center>
-            <Container maxW="md" flex="1">
-                <Center minHeight="80%">
-                    <VStack w="100%" spacing={4}>
-                        <Button
-                            w="100%"
-                            size="lg"
-                            type="button"
-                            onClick={onCreateGame}
-                            isLoading={isLoading}
-                            rightIcon={<AddIcon />}
-                        >
-                            Créer une partie
+        <Flex direction="column" height="100vh">
+            <Box width="100%" height="20vh" p="8">
+                <Flex width="100%" justify="between">
+                    <Heading>{GAME_NAME}</Heading>
+                </Flex>
+            </Box>
+            <Container flexGrow="1">
+                <Box minHeight="80%">
+                    <Flex direction="column" width="100%" gap="4">
+                        <Button type="button" onClick={onCreateGame} loading={isLoading}>
+                            Créer une partie <PlusIcon />
                         </Button>
                         <JoinGameForm />
-                        <Divider my={6} />
-                        <Button size="lg" as={Link} to="/about" variant="ghost">
-                            À propos
+                        <Separator my="6" />
+                        <Button variant="ghost" asChild>
+                            <Link to="/about">À propos</Link>
                         </Button>
-                    </VStack>
-                </Center>
+                    </Flex>
+                </Box>
             </Container>
-        </VStack>
+        </Flex>
     );
 }
