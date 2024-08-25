@@ -1,8 +1,7 @@
-import { json, LinksFunction, LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
-import { Outlet, useLoaderData } from '@remix-run/react';
+import { json, LinksFunction, MetaFunction } from '@remix-run/node';
+import { Links, Meta, Outlet, Scripts, useLoaderData } from '@remix-run/react';
 import { PUBLIC_MAX_PLAYERS, PUBLIC_MIN_PLAYERS, PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '~/utils/env';
 import { useClientSupabase } from '~/application/supabaseClient';
-import Document from '~/components/Document';
 
 export const links: LinksFunction = () => [
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -20,7 +19,7 @@ export const meta: MetaFunction = () => [
     },
 ];
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader() {
     return json({
         env: {
             PUBLIC_SUPABASE_URL,
@@ -28,22 +27,30 @@ export async function loader({ request }: LoaderFunctionArgs) {
             PUBLIC_MAX_PLAYERS,
             PUBLIC_MIN_PLAYERS,
         },
-        cookies: request.headers.get('cookie') ?? '',
     });
 }
 
 export default function App() {
-    const { env, cookies } = useLoaderData<typeof loader>();
+    const { env } = useLoaderData<typeof loader>();
     const supabase = useClientSupabase<typeof loader>();
 
     return (
-        <Document cookies={cookies}>
-            <Outlet context={{ supabase }} />
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `window.env = ${JSON.stringify(env)}`,
-                }}
-            />
-        </Document>
+        <html lang="fr">
+            <head>
+                <link rel="icon" href="data:image/x-icon;base64,AA" />
+                <Meta />
+                <Links />
+            </head>
+            <body>
+                <Outlet context={{ supabase }} />
+
+                <Scripts />
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `window.env = ${JSON.stringify(env)}`,
+                    }}
+                />
+            </body>
+        </html>
     );
 }
