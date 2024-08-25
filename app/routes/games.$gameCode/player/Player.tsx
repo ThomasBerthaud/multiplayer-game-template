@@ -1,4 +1,4 @@
-import { Badge, Card, CardBody, HStack } from '@chakra-ui/react';
+import { Badge, Card, Flex } from '@radix-ui/themes';
 import { User } from '~/domain/Users/User.types';
 import { useLoaderData } from '@remix-run/react';
 import { loader } from '~/routes/games.$gameCode/route';
@@ -14,16 +14,14 @@ export default function Player({ user }: Props) {
     const isYou = user.id === you.id;
 
     return (
-        <Card variant="outline">
-            <CardBody>
-                <HStack justifyContent="space-between">
-                    {isYou ? <EditUsernameForm user={user} /> : <UserName userName={user.user_name} />}
-                    <HStack gap={2}>
-                        {isOwner && <Badge>Owner</Badge>}
-                        {isYou && <Badge>You</Badge>}
-                    </HStack>
-                </HStack>
-            </CardBody>
+        <Card>
+            <Flex justify="between">
+                {isYou ? <EditUsernameForm user={user} /> : <UserName userName={user.user_name} />}
+                <Flex gap="2">
+                    {isOwner && <Badge>Owner</Badge>}
+                    {isYou && <Badge>You</Badge>}
+                </Flex>
+            </Flex>
         </Card>
     );
 }

@@ -2,6 +2,8 @@ import { json, LinksFunction, MetaFunction } from '@remix-run/node';
 import { Links, Meta, Outlet, Scripts, useLoaderData } from '@remix-run/react';
 import { PUBLIC_MAX_PLAYERS, PUBLIC_MIN_PLAYERS, PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '~/utils/env';
 import { useClientSupabase } from '~/application/supabaseClient';
+import { Theme } from '@radix-ui/themes';
+import '@radix-ui/themes/styles.css';
 
 export const links: LinksFunction = () => [
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -42,14 +44,16 @@ export default function App() {
                 <Links />
             </head>
             <body>
-                <Outlet context={{ supabase }} />
+                <Theme appearance="dark" accentColor="teal" grayColor="mauve">
+                    <Outlet context={{ supabase }} />
 
-                <Scripts />
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `window.env = ${JSON.stringify(env)}`,
-                    }}
-                />
+                    <Scripts />
+                    <script
+                        dangerouslySetInnerHTML={{
+                            __html: `window.env = ${JSON.stringify(env)}`,
+                        }}
+                    />
+                </Theme>
             </body>
         </html>
     );

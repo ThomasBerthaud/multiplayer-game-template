@@ -1,28 +1,27 @@
 import { useFetcher } from '@remix-run/react';
 import { useZorm } from 'react-zorm';
 import { GameJoinFormSchema } from '~/domain/Games/schemas/GameJoinForm.schema';
-import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';
-import { Box, FormControl, FormErrorMessage, IconButton } from '@chakra-ui/react';
-import { ArrowForwardIcon } from '@chakra-ui/icons';
+import { Box, IconButton, TextField } from '@radix-ui/themes';
+import { ArrowRightIcon } from '@radix-ui/react-icons';
 
 export default function JoinGameForm() {
     const fetcher = useFetcher();
     const zo = useZorm('GameJoin', GameJoinFormSchema);
 
     return (
-        <Box w="100%">
+        <Box width="100%">
             <fetcher.Form ref={zo.ref} method="post" action="/games/join">
-                <FormControl isInvalid={!!zo.errors.gameCode()}>
-                    <InputGroup size="lg">
-                        <Input pr="4.5rem" type="text" name={zo.fields.gameCode()} placeholder="Rejoindre une partie" />
-                        <InputRightElement>
-                            <IconButton type="submit" aria-label="Rejoindre" icon={<ArrowForwardIcon />} />
-                        </InputRightElement>
-                    </InputGroup>
-                    {zo.errors.gameCode((e) => (
-                        <FormErrorMessage>{e.message}</FormErrorMessage>
-                    ))}
-                </FormControl>
+                <TextField.Root name={zo.fields.gameCode()} placeholder="Rejoindre une partie">
+                    <TextField.Slot side="right">
+                        <IconButton type="submit" aria-label="Rejoindre">
+                            <ArrowRightIcon />
+                        </IconButton>
+                    </TextField.Slot>
+                </TextField.Root>
+
+                {zo.errors.gameCode((e) => (
+                    <Box>{e.message}</Box>
+                ))}
             </fetcher.Form>
         </Box>
     );

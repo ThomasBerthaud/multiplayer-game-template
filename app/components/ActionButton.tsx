@@ -1,16 +1,15 @@
 import { Form } from '@remix-run/react';
-import { Button } from '@chakra-ui/react';
+import { Button, ButtonProps } from '@radix-ui/themes';
 
-type Props = {
+type Props = ButtonProps & {
     action: string;
     label: string;
-    isLoading?: boolean;
 };
 
-export default function ActionButton({ action, label, isLoading }: Props) {
+export default function ActionButton({ action, label, ...buttonProps }: Props) {
     return (
         <Form method="POST" action={action}>
-            <Button type="submit" isLoading={isLoading}>
+            <Button type="submit" {...buttonProps}>
                 {label}
             </Button>
         </Form>
