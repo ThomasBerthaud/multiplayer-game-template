@@ -1,8 +1,7 @@
+import { Box, Button, Card, Container, Flex, Heading, Separator } from '@radix-ui/themes';
 import { Link, useFetcher, useNavigation } from '@remix-run/react';
-import { Box, Button, Container, Flex, Heading, Separator } from '@radix-ui/themes';
-import JoinGameForm from '~/routes/_index/JoinGameForm';
 import { GAME_NAME } from '~/domain/Games/Game.constants';
-import { PlusIcon } from '@radix-ui/react-icons';
+import CreateOrJoinForm from './CreateOrJoinForm';
 
 export default function Index() {
     const fetcher = useFetcher();
@@ -14,26 +13,40 @@ export default function Index() {
     };
 
     return (
-        <Flex direction="column" height="100vh">
-            <Box width="100%" height="20vh" p="8">
-                <Flex width="100%" justify="between">
-                    <Heading>{GAME_NAME}</Heading>
+        <Flex direction="column" minHeight="100vh" style={{ background: 'var(--gray-1)' }}>
+            <Box
+                width="100%"
+                p={{ initial: '4', sm: '6' }}
+                height={{ initial: '10vh', sm: '20vh' }}
+                style={{ background: 'var(--gray-2)' }}
+            >
+                <Flex width="100%" justify="between" align="center" height="100%">
+                    <Heading size={{ initial: '6', sm: '7' }}>{GAME_NAME}</Heading>
                 </Flex>
             </Box>
-            <Container flexGrow="1">
-                <Box minHeight="80%">
-                    <Flex direction="column" width="100%" gap="4">
-                        <Button type="button" onClick={onCreateGame} loading={isLoading}>
-                            Créer une partie <PlusIcon />
-                        </Button>
-                        <JoinGameForm />
-                        <Separator my="6" />
-                        <Button variant="ghost" asChild>
-                            <Link to="/about">À propos</Link>
-                        </Button>
-                    </Flex>
-                </Box>
-            </Container>
+
+            <Box
+                flexGrow="1"
+                py={{ initial: '6', sm: '8' }}
+                px={{ initial: '4', sm: '6' }}
+                height={{ initial: '85vh', sm: 'auto' }}
+            >
+                <Container size={{ initial: '2', sm: '3' }}>
+                    <Card size={{ initial: '2', sm: '3' }}>
+                        <Flex direction="column" gap={{ initial: '6', sm: '4' }}>
+                            <CreateOrJoinForm onClick={onCreateGame} isLoading={isLoading} />
+
+                            <Separator size="4" />
+
+                            <Flex justify="center" width="100%">
+                                <Button variant="ghost" size={{ initial: '2', sm: '3' }} asChild>
+                                    <Link to="/about">À propos</Link>
+                                </Button>
+                            </Flex>
+                        </Flex>
+                    </Card>
+                </Container>
+            </Box>
         </Flex>
     );
 }
