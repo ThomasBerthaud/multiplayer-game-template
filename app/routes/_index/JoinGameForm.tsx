@@ -1,4 +1,4 @@
-import { useFetcher } from '@remix-run/react';
+import { useFetcher, useNavigation } from '@remix-run/react';
 import { useZorm } from 'react-zorm';
 import { GameJoinFormSchema } from '~/domain/Games/schemas/GameJoinForm.schema';
 import { Box, IconButton, TextField } from '@radix-ui/themes';
@@ -7,13 +7,15 @@ import { ArrowRightIcon } from '@radix-ui/react-icons';
 export default function JoinGameForm() {
     const fetcher = useFetcher();
     const zo = useZorm('GameJoin', GameJoinFormSchema);
+    const navigation = useNavigation();
+    const isLoading = navigation.state === 'loading';
 
     return (
         <Box width="100%">
             <fetcher.Form ref={zo.ref} method="post" action="/games/join">
-                <TextField.Root name={zo.fields.gameCode()} placeholder="Rejoindre une partie">
+                <TextField.Root name={zo.fields.gameCode()} placeholder="Rejoindre une partie" size="3">
                     <TextField.Slot side="right">
-                        <IconButton type="submit" aria-label="Rejoindre">
+                        <IconButton type="submit" aria-label="Rejoindre" variant="ghost" loading={isLoading}>
                             <ArrowRightIcon />
                         </IconButton>
                     </TextField.Slot>

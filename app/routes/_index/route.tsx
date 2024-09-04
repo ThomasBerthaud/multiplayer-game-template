@@ -20,19 +20,19 @@ export default function Index() {
                     <Heading>{GAME_NAME}</Heading>
                 </Flex>
             </Box>
-            <Container flexGrow="1">
-                <Box minHeight="80%">
-                    <Flex direction="column" width="100%" gap="4">
-                        <Button type="button" onClick={onCreateGame} loading={isLoading}>
-                            Créer une partie <PlusIcon />
-                        </Button>
-                        <JoinGameForm />
-                        <Separator my="6" />
-                        <Button variant="ghost" asChild>
+            <Container flexGrow="1" mx="6">
+                <Flex direction="column" width="100%" gap="4">
+                    <Button type="button" onClick={onCreateGame} loading={isLoading} size="3">
+                        Créer une partie <PlusIcon />
+                    </Button>
+                    <JoinGameForm />
+                    <Separator my="5" size="4" />
+                    <Flex justify="center" width="100%">
+                        <Button variant="ghost" size="3" asChild>
                             <Link to="/about">À propos</Link>
                         </Button>
                     </Flex>
-                </Box>
+                </Flex>
             </Container>
         </Flex>
     );
