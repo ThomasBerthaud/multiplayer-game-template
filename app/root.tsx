@@ -1,5 +1,5 @@
 import { json, LinksFunction, MetaFunction } from '@remix-run/node';
-import { Links, Meta, Outlet, Scripts, useLoaderData } from '@remix-run/react';
+import { Links, Meta, Outlet, Scripts, useLoaderData, useRouteError } from '@remix-run/react';
 import { PUBLIC_MAX_PLAYERS, PUBLIC_MIN_PLAYERS, PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '~/utils/env';
 import { useClientSupabase } from '~/application/supabaseClient';
 import { Theme } from '@radix-ui/themes';
@@ -53,6 +53,26 @@ export default function App() {
                             __html: `window.env = ${JSON.stringify(env)}`,
                         }}
                     />
+                </Theme>
+            </body>
+        </html>
+    );
+}
+
+export function ErrorBoundary() {
+    const error = useRouteError();
+    console.error(error);
+    return (
+        <html lang="fr">
+            <head>
+                <title>Oh no!</title>
+                <Meta />
+                <Links />
+            </head>
+            <body>
+                <Theme appearance="dark" accentColor="teal" grayColor="mauve">
+                    Oops ! something went wrong
+                    <Scripts />
                 </Theme>
             </body>
         </html>
