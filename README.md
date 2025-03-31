@@ -1,6 +1,6 @@
 # Multiplayer Game Template
 
-This project is a template for creating an online multiplayer game. It is based on [Remix](https://remix.run) and [Supabase](https://supabase.io/).
+This template provides a solid foundation for quickly developing an online multiplayer game. It includes all essential features for a modern multiplayer game: matchmaking system, lobby, real-time chat, notifications, and player rankings. Built with [Remix](https://remix.run) and [Supabase](https://supabase.io/), it offers a robust and extensible architecture, allowing developers to focus on their game logic rather than technical infrastructure.
 
 ## Project Installation
 
