@@ -16,7 +16,7 @@ export async function tryAddToGame(request: Request, gameId: NumberLike) {
     const response = await supabase
         .from('games_users')
         .select()
-        .eq('game_id', gameId)
+        .eq('game_id', Number(gameId))
         .eq('user_id', user.id)
         .maybeSingle();
 
@@ -50,7 +50,7 @@ export async function addToGame(request: Request, gameId: NumberLike) {
 export async function getPlayers(request: Request, gameId: NumberLike) {
     const supabase = getServerSupabase(request);
 
-    const response = await supabase.from('users').select(`*, games_users!inner(*)`).eq('games_users.game_id', gameId);
+    const response = await supabase.from('users').select(`*, games_users!inner(*)`).eq('games_users.game_id', Number(gameId));
 
     return handleResult(response);
 }
@@ -63,11 +63,11 @@ export async function leaveGame(request: Request, gameId: NumberLike) {
 export async function tryLeaveGame(request: Request, gameId: NumberLike) {
     const supabase = getServerSupabase(request);
     const you = await getCurrentUser(request);
-    return supabase.from('games_users').delete().match({ game_id: gameId, user_id: you.id });
+    return supabase.from('games_users').delete().match({ game_id: Number(gameId), user_id: you.id });
 }
 
 export async function updateUser(request: Request, userId: string, form: UserEditForm) {
     const supabase = getServerSupabase(request);
-    const response = await supabase.from('users').update(form).eq('id', userId);
+    const response = await supabase.from('users').update(form).eq('user_id', userId);
     return handleResult(response);
 }
