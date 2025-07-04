@@ -23,7 +23,7 @@ export async function createGame(request: Request) {
 
 export async function deleteGameIfEmpty(request: Request, gameId: NumberLike) {
     const supabase = getServerSupabase(request);
-    const usersGameResponse = await supabase.from('games_users').select().eq('game_id', gameId).maybeSingle();
+    const usersGameResponse = await supabase.from('games_users').select().eq('game_id', Number(gameId)).maybeSingle();
     const hasUsers = handleResult(usersGameResponse) !== null;
     if (hasUsers) {
         return;
