@@ -68,6 +68,6 @@ export async function tryLeaveGame(request: Request, gameId: NumberLike) {
 
 export async function updateUser(request: Request, userId: string, form: UserEditForm) {
     const supabase = getServerSupabase(request);
-    const response = await supabase.from('users').update(form).eq('user_id', userId);
+    const response = await supabase.from('users').update(form).eq('id', Number(userId));
     return handleResult(response);
 }
