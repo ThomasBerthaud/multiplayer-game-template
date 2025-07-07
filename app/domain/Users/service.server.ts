@@ -1,4 +1,4 @@
-import { handleResult, handleAuthResult } from '~/utils/handleResult';
+import { handleResult } from '~/utils/handleResult';
 import type { NumberLike } from '~/application/Hashid';
 import { GameAlreadyStartedError } from '~/domain/Games/errors/GameAlreadyStartedError';
 import { MaxPlayersError } from '~/domain/Users/errors/MaxPlayersError';
@@ -46,7 +46,7 @@ export async function addToGame(request: Request, gameId: NumberLike) {
     }
     
     const now = new Date().toISOString();
-    // Cast to any to handle new columns that might not be in generated types yet
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- New columns not in generated types yet
     const response = await (supabase
         .from('games_users') as any)
         .insert({ 
@@ -88,7 +88,7 @@ export async function updateUserActivity(request: Request, gameId: NumberLike) {
     const user = await getCurrentUser(request);
     const supabase = getServerSupabase(request);
     
-    // Cast to any to handle new column that might not be in generated types yet
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- New columns not in generated types yet
     const response = await (supabase
         .from('games_users') as any)
         .update({ last_active_at: new Date().toISOString() })
@@ -101,6 +101,7 @@ export async function removeInactiveUsers(request: Request, gameId?: NumberLike,
     const supabase = getServerSupabase(request);
     const inactiveThreshold = new Date(Date.now() - inactiveMinutes * 60 * 1000).toISOString();
     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- New columns not in generated types yet
     let query = (supabase
         .from('games_users') as any)
         .delete()
@@ -115,7 +116,6 @@ export async function removeInactiveUsers(request: Request, gameId?: NumberLike,
 }
 
 export async function forceRemoveUser(request: Request, gameId: NumberLike, targetUserId: number) {
-    const currentUser = await getCurrentUser(request);
     const supabase = getServerSupabase(request);
     
     // Check if current user is the game owner
@@ -127,7 +127,7 @@ export async function forceRemoveUser(request: Request, gameId: NumberLike, targ
     
     const game = handleResult(gameResponse);
     
-    // Get current user's UUID for comparison - use the user from getCurrentUser which already has it
+    // Get current user's UUID for comparison
     const authResponse = await supabase.auth.getUser();
     if (authResponse.error) {
         throw authResponse.error;

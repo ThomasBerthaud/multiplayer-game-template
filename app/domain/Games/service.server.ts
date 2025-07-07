@@ -22,6 +22,7 @@ export async function getGameLobby(request: Request, gameId: NumberLike) {
     // Sort users by their arrival time in the game (games_users.inserted_at)
     if (game && game.users) {
         try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- New columns not in generated types yet
             const usersWithJoinTime = await (supabase
                 .from('games_users') as any)
                 .select('user_id, inserted_at, last_active_at')
@@ -39,6 +40,7 @@ export async function getGameLobby(request: Request, gameId: NumberLike) {
             );
             
             // Sort users array by their join time
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- User types from Supabase
             game.users.sort((a: any, b: any) => {
                 const joinTimeA = joinTimeMap.get(a.id)?.inserted_at;
                 const joinTimeB = joinTimeMap.get(b.id)?.inserted_at;
