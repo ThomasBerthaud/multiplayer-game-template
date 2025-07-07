@@ -4,6 +4,7 @@ import { PUBLIC_MAX_PLAYERS, PUBLIC_MIN_PLAYERS, PUBLIC_SUPABASE_ANON_KEY, PUBLI
 import { useClientSupabase } from '~/application/supabaseClient';
 import { Theme } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
+import '~/styles/glass.css';
 
 export const links: LinksFunction = () => [
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -44,7 +45,7 @@ export default function App() {
                 <Links />
             </head>
             <body>
-                <Theme appearance="dark" accentColor="teal" grayColor="mauve">
+                <Theme appearance="dark" accentColor="gray" grayColor="gray">
                     <Outlet context={{ supabase }} />
 
                     <Scripts />

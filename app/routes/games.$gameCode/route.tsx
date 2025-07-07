@@ -52,14 +52,14 @@ export default function GameLobby() {
     const isOwner = you.user_id === gameLobby.owner_id;
 
     return (
-        <Container py="10">
+        <Container py="10" className="glass-effect">
             <Flex gap="6">
                 <IconButton aria-label="Quitter la partie" onClick={onLeave}>
                     <ArrowLeftIcon />
                 </IconButton>
                 <Heading>{GAME_NAME}</Heading>
             </Flex>
-            <Box pt="10">
+            <Box pt="10" className="glass-effect">
                 <Flex justify="between" pb="4">
                     <Flex>
                         <Heading as="h3">Joueurs</Heading>
