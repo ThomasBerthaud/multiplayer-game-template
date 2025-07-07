@@ -21,6 +21,8 @@ export async function tryAddToGame(request: Request, gameId: NumberLike) {
         .maybeSingle();
 
     if (handleResult(response) !== null) {
+        // User is already in the game, update their activity
+        await updateUserActivity(request, gameId);
         return;
     }
 
@@ -42,7 +44,17 @@ export async function addToGame(request: Request, gameId: NumberLike) {
     if (players.length >= MAX_PLAYERS) {
         throw new MaxPlayersError();
     }
-    const response = await supabase.from('games_users').insert({ game_id: Number(gameId), user_id: user.id });
+    
+    const now = new Date().toISOString();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- New columns not in generated types yet
+    const response = await (supabase
+        .from('games_users') as any)
+        .insert({ 
+            game_id: Number(gameId), 
+            user_id: user.id,
+            inserted_at: now,
+            last_active_at: now
+        });
 
     return handleResult(response);
 }
@@ -69,5 +81,71 @@ export async function tryLeaveGame(request: Request, gameId: NumberLike) {
 export async function updateUser(request: Request, userId: string, form: UserEditForm) {
     const supabase = getServerSupabase(request);
     const response = await supabase.from('users').update(form).eq('id', Number(userId));
+    return handleResult(response);
+}
+
+export async function updateUserActivity(request: Request, gameId: NumberLike) {
+    const user = await getCurrentUser(request);
+    const supabase = getServerSupabase(request);
+    
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- New columns not in generated types yet
+    const response = await (supabase
+        .from('games_users') as any)
+        .update({ last_active_at: new Date().toISOString() })
+        .match({ game_id: Number(gameId), user_id: user.id });
+    
+    return handleResult(response);
+}
+
+export async function removeInactiveUsers(request: Request, gameId?: NumberLike, inactiveMinutes: number = 15) {
+    const supabase = getServerSupabase(request);
+    const inactiveThreshold = new Date(Date.now() - inactiveMinutes * 60 * 1000).toISOString();
+    
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- New columns not in generated types yet
+    let query = (supabase
+        .from('games_users') as any)
+        .delete()
+        .lt('last_active_at', inactiveThreshold);
+    
+    if (gameId) {
+        query = query.eq('game_id', Number(gameId));
+    }
+    
+    const response = await query;
+    return handleResult(response);
+}
+
+export async function forceRemoveUser(request: Request, gameId: NumberLike, targetUserId: number) {
+    const supabase = getServerSupabase(request);
+    
+    // Check if current user is the game owner
+    const gameResponse = await supabase
+        .from('games')
+        .select('owner_id')
+        .eq('id', Number(gameId))
+        .single();
+    
+    const game = handleResult(gameResponse);
+    
+    // Get current user's UUID for comparison
+    const authResponse = await supabase.auth.getUser();
+    if (authResponse.error) {
+        throw authResponse.error;
+    }
+    
+    const authUser = authResponse.data.user;
+    if (!authUser) {
+        throw new Error('User not authenticated');
+    }
+    
+    if (game.owner_id !== authUser.id) {
+        throw new Error('Only game owner can force remove users');
+    }
+    
+    const response = await supabase
+        .from('games_users')
+        .delete()
+        .match({ game_id: Number(gameId), user_id: targetUserId });
+    
     return handleResult(response);
 }
