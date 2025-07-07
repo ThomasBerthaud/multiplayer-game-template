@@ -5,7 +5,6 @@ import { loader } from '~/routes/games.$gameCode/route';
 import EditUsernameForm from './edit-username-form/EditUsernameForm';
 import UserName from '~/routes/games.$gameCode/player/username/UserName';
 import { Cross2Icon } from '@radix-ui/react-icons';
-import ActionButton from '~/components/ActionButton';
 
 type Props = {
     user: User;
