@@ -63,11 +63,52 @@ export async function leaveGame(request: Request, gameId: NumberLike) {
 export async function tryLeaveGame(request: Request, gameId: NumberLike) {
     const supabase = getServerSupabase(request);
     const you = await getCurrentUser(request);
-    return supabase.from('games_users').delete().match({ game_id: Number(gameId), user_id: you.id });
+    
+    // Check if the leaving user is the owner of the game
+    const game = await getGame(request, gameId);
+    if (!game) {
+        throw new GameNotFoundError();
+    }
+    
+    const isOwner = game.owner_id === you.user_id;
+    
+    // Remove the user from the game
+    const deleteResponse = await supabase.from('games_users').delete().match({ game_id: Number(gameId), user_id: you.id });
+    
+    // If the leaving user was the owner, transfer ownership
+    if (isOwner) {
+        await transferOwnership(request, gameId);
+    }
+    
+    return deleteResponse;
 }
 
 export async function updateUser(request: Request, userId: string, form: UserEditForm) {
     const supabase = getServerSupabase(request);
     const response = await supabase.from('users').update(form).eq('id', Number(userId));
     return handleResult(response);
+}
+
+async function transferOwnership(request: Request, gameId: NumberLike) {
+    const supabase = getServerSupabase(request);
+    
+    // Get remaining users in the game, ordered by inserted_at ASC (oldest first)
+    const remainingUsersResponse = await supabase
+        .from('users')
+        .select('user_id, inserted_at, games_users!inner(*)')
+        .eq('games_users.game_id', Number(gameId))
+        .order('inserted_at', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+    
+    const oldestUser = handleResult(remainingUsersResponse);
+    
+    // Transfer ownership to the oldest remaining user if any exist
+    // If no users remain, deleteGameIfEmpty will handle cleanup
+    if (oldestUser) {
+        await supabase
+            .from('games')
+            .update({ owner_id: oldestUser.user_id })
+            .eq('id', Number(gameId));
+    }
 }
