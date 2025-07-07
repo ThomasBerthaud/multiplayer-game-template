@@ -20,8 +20,8 @@ export default function Index() {
                     <Heading>{GAME_NAME}</Heading>
                 </Flex>
             </Box>
-            <Container flexGrow="1">
-                <Box minHeight="80%">
+            <Container flexGrow="1" className="glass-effect">
+                <Box minHeight="80%" className="glass-effect">
                     <Flex direction="column" width="100%" gap="4">
                         <Button type="button" onClick={onCreateGame} loading={isLoading}>
                             Créer une partie <PlusIcon />

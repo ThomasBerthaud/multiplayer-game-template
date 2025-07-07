@@ -9,7 +9,7 @@ export default function JoinGameForm() {
     const zo = useZorm('GameJoin', GameJoinFormSchema);
 
     return (
-        <Box width="100%">
+        <Box width="100%" className="glass-effect">
             <fetcher.Form ref={zo.ref} method="post" action="/games/join">
                 <TextField.Root name={zo.fields.gameCode()} placeholder="Rejoindre une partie">
                     <TextField.Slot side="right">

@@ -14,7 +14,7 @@ export default function Player({ user }: Props) {
     const isYou = user.id === you.id;
 
     return (
-        <Card>
+        <Card className="glass-effect">
             <Flex justify="between">
                 {isYou ? <EditUsernameForm user={user} /> : <UserName userName={user.user_name} />}
                 <Flex gap="2">
