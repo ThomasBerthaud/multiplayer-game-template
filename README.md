@@ -2,6 +2,16 @@
 
 This template provides a solid foundation for quickly developing an online multiplayer game. It includes all essential features for a modern multiplayer game: matchmaking system, lobby, real-time chat, notifications, and player rankings. Built with [Remix](https://remix.run) and [Supabase](https://supabase.io/), it offers a robust and extensible architecture, allowing developers to focus on their game logic rather than technical infrastructure.
 
+## Features
+
+### Room Ownership Management
+
+The system automatically handles room ownership transfer when players leave:
+
+- **Owner Leaves**: When the current room owner leaves the lobby, ownership is automatically transferred to the oldest remaining member (determined by their `inserted_at` timestamp)
+- **Empty Room**: If no players remain in the room, the room is automatically deleted
+- **Seamless Transfer**: The ownership transfer happens transparently without requiring any UI interaction
+
 ## Project Installation
 
 To install the dependencies:
